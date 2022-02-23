@@ -7,13 +7,11 @@ import { useAppContext } from "../../../AppContext";
 const Groups = () => {
   const { cases } = useAppContext();
 
-  console.log(cases);
-
   return (
     <Box mt={2} mb={10}>
-      {/* {cases.map((group) => (
-        // <Group {...group} key={group.groupId} />
-      ))} */}
+      {cases.map((group) => (
+        <Group {...group} key={group.groupId} />
+      ))}
     </Box>
   );
 };

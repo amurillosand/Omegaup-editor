@@ -24,7 +24,7 @@ import { useMediaPredicate } from "react-media-hook";
 import { HiOutlineDotsVertical as Dots } from "react-icons/hi";
 import { AddIcon, DownloadIcon } from "@chakra-ui/icons";
 
-// import AddContainer from "../../../idk/modals/add/AddContainer";
+import AddContainer from "../../../libs/modals/add/AddContainer";
 // import AddMultipleCases from "../../../idk/modals/add/AddMultipleCases";
 
 import Groups from "./Groups";
@@ -37,31 +37,38 @@ const SidebarWindow = (props) => {
 
   const divBorderColor = useColorModeValue("gray.200", "gray.600");
 
-  const {
-    isOpen: isOpenAdd,
-    onOpen: onOpenAdd,
-    onClose: onCloseAdd,
-  } = useDisclosure();
+  const add = useDisclosure();
+
+  // const {
+  //   isOpen: isOpenAdd,
+  //   onOpen: onOpenAdd,
+  //   onClose: onCloseAdd,
+  // } = useDisclosure();
+
   const {
     isOpen: isOpenLayout,
     onOpen: onOpenLayout,
     onClose: onCloseLayout,
   } = useDisclosure();
+
   const {
     isOpen: isOpenLoadAll,
     onOpen: onOpenLoadAll,
     onClose: onCloseLoadAll,
   } = useDisclosure();
+
   const {
     isOpen: isOpenMultiple,
     onOpen: onOpenMultiple,
     onClose: onCloseMultiple,
   } = useDisclosure();
+
   const {
     isOpen: isOpenDownload,
     onOpen: onOpenDownload,
     onClose: onCloseDownload,
   } = useDisclosure();
+
   const {
     isOpen: isOpenUpload,
     onOpen: onOpenUpload,
@@ -91,7 +98,7 @@ const SidebarWindow = (props) => {
                 ref={addRef}
                 size={"sm"}
                 colorScheme={"green"}
-                // onClick={() => tabIndex === 2 && onOpenAdd()}
+                onClick={() => add.onOpen()}
                 mr={2}>
                 {isLargeScreen ? <p> Agregar</p> : <p> + </p>}
               </Button>
@@ -131,9 +138,9 @@ const SidebarWindow = (props) => {
             </Menu> */}
 
             {/* Modals and drawers */}
-            {/* <AddContainer 
-              isOpen={isOpenAdd} 
-              onClose={onCloseAdd} /> */}
+            <AddContainer
+              isOpen={add.isOpen}
+              onClose={add.onClose} />
 
             {/* <AddMultipleCases
               isOpen={isOpenMultiple}

@@ -32,7 +32,7 @@ const SolutionWindow = () => {
   const showCodeRef = useRef(null);
   const showSolutionRef = useRef(null);
 
-  const editorStyle = useColorModeValue("light", "dark");
+  const style = useColorModeValue("light", "dark");
 
   useEffect(() => {
     handleResize();
@@ -62,7 +62,7 @@ const SolutionWindow = () => {
       <Flex>
         {showCode && (
           <Box w={"100%"}>
-            <Text> Código </Text>
+            {/* <Text> Código </Text> */}
 
             <CodeEditor
               code={solution.code}
@@ -86,8 +86,9 @@ const SolutionWindow = () => {
 
         {showSolution && (
           <Box ml={5} w={"100%"}>
-            <Text>Redacción</Text>
-            <Box className={editorStyle}>
+            {/* <Text> Redacción </Text> */}
+            
+            <Box className={style}>
               <ReactMde
                 ref={mdEditorRef}
                 value={solution.text}

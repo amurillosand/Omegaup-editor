@@ -1,51 +1,58 @@
-# Número random
-Nos permite generar un número en el rango $[low, high]$:
-```
-Z get<T, Z>(low, high);
-```
+# Número random (```Z get<T, Z>(low, high)```)
+Nos permite generar un número en el rango $[low, high]$.
 
-# Arreglo de números
-Nos permite generar un arreglo de tamaño $n$ con sus valores en el rango $[low, high]$. Si unique es $true$ intentará generar valores únicos en caso de poderse.
-
-Ejemplo inválido: no se puede pedir un arreglo 5 de valores únicos si el rango de los números es $[0, 1]$.
-```
-vector<T> getArray(n, low, high, unique);
-```
-
-# String random
-Nos permite generar una string que cumpla con $pattern$, el cual se genera emparejando rangos de caracteres, por ejemplo: $pattern = "am05"$, sería una string de caracteres pertenecientes a: $[[a, m], [0, 5]]$
-```
-string getString(size, pattern);
-```
-
-# Arreglo de strings
-Nos permite generar un arreglo de strings de tamaño $n$ con los tamaños de las strings en el rango $[minLength, maxLength]$ en base al $pattern$ proporcionado. Si unique es $true$ intentará generar valores únicos en caso de poderse.
-```
-vector<string> getStrings(n, pattern, minLength, maxLength, unique) {
-```
-
-# Ejemplo:
 ```
 Random random;
 
-// Números random
-auto a = random.get<int>(0, 5); // 'a' es un entero en [0, 5].
-auto b = random.get<double>(0, 10); // 'b' es un flotante en [0, 10].
-auto c = random.get('A', 'Z'); // 'c' es una letra mayúscula.
+// 'a' es un entero en [0, 5].
+int a = random.get<int>(0, 5); 
 
+// 'b' es un flotante en [0, 10].
+double b = random.get<double>(0, 10); 
+
+// 'c' es una letra mayúscula, note que no se 
+// manda el tipo de dato, pues se infiere por los parámetros
+auto c = random.get('A', 'Z'); 
+
+// El número será de tipo long long en [1, z].
 long long z = 1e18;
-auto d = random.get(1, z); // El número será de tipo long long en [1, z].
+auto d = random.get(1, z); 
+```
 
-// Arreglos de números
-auto arrA = random.getArray<double>(10, -10, 10); // 10 doubles entre [-10, 10]
-auto arrB = random.getArray<int>(3, 0, 100, true); // 3 enteros únicos entre [0, 100]
+# Arreglo de números (```vector<T> getArray(n, low, high, unique)```)
+Nos permite generar un arreglo de tamaño $n$ con sus valores en el rango $[low, high]$. Si unique es $true$ intentará generar valores únicos en caso de poderse.
 
-// Strings random
-auto strA = random.getString(5, "az"); // string de tamaño 5 con puras letras minúsculas
-auto strB = random.getString(10, "az09AZ"); // string de tamaño 10 con cualquier caracter alfanumérico
+Ejemplo inválido: no se puede pedir un arreglo 5 de valores únicos si el rango de los números es $[0, 1]$.
 
-// Arreglo de strings
-auto arrStrA = random.getStrings(10, "az", 3, 5); // 10 strings con puras letras minúsculas con entre 3 y 5 letras.
-auto arrStrB = random.getStrings(10, "azAZ", 1, 100, true); // 10 strings únicas de puras letras con tamaños entre 1 y 100 letras.
+```
+// 10 doubles entre [-10, 10]
+vector<double> arrA = random.getArray<double>(10, -10, 10); 
+
+// 3 enteros únicos entre [0, 100]
+auto arrB = random.getArray<int>(3, 0, 100, true);
+```
+
+# String random (```string getString(n, pattern)```)
+Nos permite generar una string que cumpla con $pattern$, el cual se genera emparejando rangos de caracteres, por ejemplo: $pattern = "am05"$, sería una string de caracteres pertenecientes a: $[[a, m], [0, 5]]$
+
+
+```
+// string de tamaño 5 con puras letras minúsculas
+string strA = random.getString(5, "az");
+
+// string de tamaño 10 con cualquier caracter alfanumérico 
+auto strB = random.getString(10, "az09AZ"); 
+```
+
+
+# Arreglo de strings (```vector<string> getStrings(n, pattern, minLength, maxLength, unique)```)
+Nos permite generar un arreglo de strings de tamaño $n$ con los tamaños de las strings en el rango $[minLength, maxLength]$ en base al $pattern$ proporcionado. Si unique es $true$ intentará generar valores únicos en caso de poderse.
+
+```
+// 10 strings con puras letras minúsculas con entre 3 y 5 letras.
+vector<string> arrStrA = random.getStrings(10, "az", 3, 5); 
+
+// 10 strings únicas de puras letras con tamaños entre 1 y 100 letras.
+auto arrStrB = random.getStrings(10, "azAZ", 1, 100, true); 
 ```
 

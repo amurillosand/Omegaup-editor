@@ -1,17 +1,20 @@
-export const initialMarkdownValue =
-  `# Descripción
+# Descripción
 
 Esta es la descripción del problema. Inventa una historia creativa.
 Puedes utilizar matemáticas inline para hacer $x_i, y_i$, o $z_i$ o incluso:
-$$x=\\frac{b\\pm \\sqrt{b^2 -4ac}}{2a}$$
+$x=\frac{b\pm \sqrt{b^2 -4ac}}{2a}$
 
 # Entrada
 
 Aquí va la descripción de la entrada del problema.
 
+Dos enteros $a$ y $b$.
+
 # Salida
 
 Esta es la descripción de la salida esperada.
+
+La suma de $a$ con $b$.
 
 # Ejemplo
 
@@ -32,5 +35,5 @@ Suma de 5 + 10
 # Límites
 
 - Aquí van los límites
-- $1 \\leq a, b \\leq 1000$
-`
+- $1 \leq a, b \leq 1000$
+

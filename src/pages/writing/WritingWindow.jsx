@@ -69,25 +69,28 @@ const WritingWindow = () => {
 
   return (
     <>
-      <Flex direction={"column"} w={"100%"} mb={10}>
-        <Flex mt={5}>
+      <Flex direction={"column"} w={"100%"}>
+        <Flex>
           {showEditor && (
-            <Box data-test={"solution-md-editor"} className={style}>
+            <Box className={style}>
+              {/* <Text> Editor </Text> */}
+
               <ReactMde value={writing} onChange={setWriting} />
             </Box>
           )}
-          <Box
-            ml={5}
-            w={showEditor ? "50%" : "100%"}
-            ref={divRef}
-            className={style + " markdown"}
-          />
+          <Box ml={5} w={showEditor ? "50%" : "100%"}>
+            {/* <Text> Texto </Text> */}
+
+            <Box
+              ref={divRef}
+              className={style + " markdown"}
+            />
+          </Box>
         </Flex>
       </Flex>
 
       <Box pos={"fixed"} left={3} bottom={5}>
         <Button
-          data-test={"writing-hide"}
           ref={hideRef}
           size={"sm"}
           width={"200px"}

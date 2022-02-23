@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ChakraProvider, theme } from "@chakra-ui/react";
 import Navbar from "./pages/Navbar";
 import Header from "./pages/Header";
@@ -6,6 +6,9 @@ import MainWindow from "./pages/MainWindow";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppContext } from "./AppContext";
 import { useState } from "react";
+
+import { fileToString } from "./libs/other/toString"
+import writingTemplate from "./pages/writing/template.txt"
 
 export const App = () => {
   const [generator, setGenerator] = useState({
@@ -22,7 +25,14 @@ export const App = () => {
   const [writing, setWriting] = useState("");
   const [title, setTitle] = useState("");
 
-  const [cases, setCases] = useState([{}]);
+  const [cases, setCases] = useState([]);
+  const [groups, setGroups] = useState([]);
+
+  useEffect(() => {
+    fileToString(writingTemplate, (data) => {
+      setWriting(data);
+    });
+  }, []);
 
   return (
     <ChakraProvider theme={theme}>
@@ -32,7 +42,8 @@ export const App = () => {
           solution, setSolution,
           writing, setWriting,
           title, setTitle,
-          cases, setCases
+          cases, setCases,
+          groups, setGroups
         }}>
         <>
           <Navbar />

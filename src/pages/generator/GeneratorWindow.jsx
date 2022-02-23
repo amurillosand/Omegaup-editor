@@ -20,11 +20,13 @@ import { parse } from "../../libs/markdown/parser";
 import "../../libs/markdown/editorStyles/react-mde-all.css";
 import "../../libs/aceStyles/darkTheme.css";
 
+import { fileToString } from "../../libs/other/toString"
+import informationFile from "./information.txt"
+
 import { useAppContext } from "../../AppContext"
 import { useRef, useState } from "react";
 
 const GeneratorWindow = () => {
-  // TODO: Agregar la información del que está en generatorInformationDir
   // TODO: Bloquear mi Random en el código (?)
 
   const { generator, setGenerator } = useAppContext();
@@ -34,15 +36,16 @@ const GeneratorWindow = () => {
   const [showExplanation, setShowExplanation] = useState(false);
 
   const divRef = useRef(null);
+  fileToString(informationFile, (data) => {
+    divRef.current.innerHTML = parse(data);
+  });
+
   const showCodeRef = useRef(null);
   const showExplanationRef = useRef(null);
 
   const style = useColorModeValue("light", "dark");
 
   React.useEffect(() => {
-    if (divRef.current !== null) {
-      // divRef.current.innerHTML = parse(generatorInformation);
-    }
     document.addEventListener("keyup", handleKeyPress);
     return () => document.removeEventListener("keypress", handleKeyPress);
   }, []);
@@ -63,8 +66,8 @@ const GeneratorWindow = () => {
       <Flex>
         {showCode && (
           <Box w={"100%"}>
-            <Text> Código </Text>
-            
+            {/* <Text> Código </Text> */}
+
             <CodeEditor
               code={generator.code}
               setCode={(newCode) => {
@@ -85,16 +88,16 @@ const GeneratorWindow = () => {
           </Box>
         )}
 
-        {/* {showExplanation && (
-          <Box ml={5} w={"100%"}>
-            <Text>Explicación</Text>
+        {showExplanation && (
+          <Box ml={5} w={showCode ? "50%" : "100%"}>
+            {/* <Text> Explicación de uso </Text> */}
+            
             <Box
-              w={showCode ? "50%" : "100%"}
               ref={divRef}
               className={style + " markdown"}
             />
           </Box>
-        )} */}
+        )}
       </Flex>
 
       {!showExplanation && !showCode && (
@@ -127,7 +130,7 @@ const GeneratorWindow = () => {
           >
             <HStack>
               <Text>
-                {showExplanation ? "Ocultar explicación" : "Mostrar explicación"}
+                {showExplanation ? "Ocultar como usarlo" : "Mostrar como usarlo"}
               </Text>
               <Text fontSize={"smaller"} opacity={"0.5"}>
                 Ctrl + M
