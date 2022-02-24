@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppContext } from "./AppContext";
 import { useState } from "react";
 
+import { v4 as uuid } from "uuid";
 import { fileToString } from "./libs/other/toString"
 import writingTemplate from "./pages/writing/template.txt"
 
@@ -32,6 +33,16 @@ export const App = () => {
     fileToString(writingTemplate, (data) => {
       setWriting(data);
     });
+
+    const emptyGroup = {
+      groupId: uuid(),
+      name: "sin_grupo",
+      points: 100,
+      defined: false,
+      cases: [],
+    };
+
+    setGroups([emptyGroup]);
   }, []);
 
   return (

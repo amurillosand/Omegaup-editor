@@ -18,20 +18,20 @@ import {
 import ReactSelectDark from "../../../components/ReactSelectDark"
 
 import { useRef, useState } from "react";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { useAppContext } from "../../../AppContext";
 
 // TODO handle logic for no group cases
 
 const AddCase = (props) => {
   const { onClose } = props;
-  const { cases, setCases, groups } = useAppContext();
+  const { setGroups, setCases, groups } = useAppContext();
   const [autoPoints, setAutoPoints] = useState(true);
   const [selectedValue, setSelectedValue] = useState("");
   const [hasGroup, setHasGroup] = useState(false);
 
   const caseName = useRef("");
-  const points = useRef(50);
+  const points = useRef(0);
   const pointsDefined = useRef(false);
 
   const toast = useToast();
@@ -87,6 +87,19 @@ const AddCase = (props) => {
 
     setCases(prevCases => [...prevCases, newCase])
 
+    setGroups(prevGroups => {
+      return prevGroups.map(group => {
+        if (group.groupId === selectedGroupId) {
+          // Modify group by adding the newCase.caseId
+          return {
+            ...group,
+            cases: [...group.cases, newCase]
+          }
+        }
+        return group;
+      });
+    });
+
     onClose();
   }
 
@@ -99,9 +112,7 @@ const AddCase = (props) => {
     <form onSubmit={(e) => handleSubmit(e)}>
       <FormControl mt={3} isRequired>
         <FormLabel> Nombre del caso</FormLabel>
-        <Input
-          data-test={"case-name-input"}
-          onChange={(e) => (caseName.current = e.target.value)} />
+        <Input onChange={(e) => (caseName.current = e.target.value)} />
         <FormHelperText>En minúsculas y sin espacios</FormHelperText>
       </FormControl>
 
@@ -114,6 +125,7 @@ const AddCase = (props) => {
           options={options}
           defaultValue={{ label: "sin_grupo", value: options[0].value }}
           darkTheme={darkTheme} />
+
       </FormControl>
       {!hasGroup && (
         <FormControl mt={5}>
@@ -122,39 +134,32 @@ const AddCase = (props) => {
             onChange={(e, valueAsNumber) => (points.current = valueAsNumber)}
             min={0}
             max={100}
-            isDisabled={autoPoints}
-          >
+            isDisabled={autoPoints}>
             <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
           </NumberInput>
           {autoPoints && (
             <FormHelperText>
               El programa calculará automáticamente el puntaje
             </FormHelperText>
           )}
+
           <Checkbox
             mt={3}
             isChecked={autoPoints}
             onChange={() => {
               setAutoPoints(!autoPoints);
               pointsDefined.current = autoPoints;
-            }}
-          >
+            }}>
             Puntaje automático
           </Checkbox>
         </FormControl>
       )}
 
       <Button
-        data-test={"add-case"}
         colorScheme="green"
         isFullWidth
         mt={10}
-        type="submit"
-      >
+        type="submit">
         Agregar Caso
       </Button>
     </form>

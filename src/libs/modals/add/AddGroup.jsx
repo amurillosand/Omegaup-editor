@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 
 import { useRef, useState } from "react";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { useAppContext } from "../../../AppContext";
 
 const AddGroup = (props) => {
@@ -22,7 +22,7 @@ const AddGroup = (props) => {
   const [autoPoints, setAutoPoints] = useState(true);
 
   const groupName = useRef("");
-  const points = useRef(50);
+  const points = useRef(0);
   const pointsDefined = useRef(false);
 
   const toast = useToast();
@@ -33,9 +33,6 @@ const AddGroup = (props) => {
 
     const validName = groupName.current.toLowerCase().replaceAll(" ", "_");
 
-    console.clear();
-    console.log("Group name:", validName);
-
     let isValid = true;
     groups.forEach((groupElement) => {
       if (groupElement.name === validName) {
@@ -43,8 +40,6 @@ const AddGroup = (props) => {
         return;
       }
     });
-
-    console.log("Valid:", isValid);
 
     if (!isValid) {
       toast({
@@ -56,12 +51,6 @@ const AddGroup = (props) => {
       return;
     }
 
-    // console.log(uuid());
-    console.log(validName);
-    console.log(points.current);
-    console.log(pointsDefined.current);
-    console.log([]);
-
     const newGroup = {
       groupId: uuid(),
       name: validName,
@@ -70,14 +59,13 @@ const AddGroup = (props) => {
       cases: [],
     };
 
-    console.log("Add group:", newGroup);
     setGroups((prevGroups) => ([...prevGroups, newGroup]));
 
     onClose();
   }
 
   return (
-    <>
+    <form onSubmit={(e) => handleSubmit(e)}>
       <FormControl mt={3} isRequired>
         <FormLabel> Nombre del grupo </FormLabel>
         <Input onChange={(e) => (groupName.current = e.target.value)} />
@@ -115,10 +103,10 @@ const AddGroup = (props) => {
         colorScheme="green"
         isFullWidth
         mt={10}
-        onClick={(e) => handleSubmit(e)}>
+        type="submit">
         Agregar grupo
       </Button>
-    </>
+    </form>
   );
 };
 

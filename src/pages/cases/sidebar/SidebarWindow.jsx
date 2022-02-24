@@ -29,52 +29,12 @@ import AddContainer from "../../../libs/modals/add/AddContainer";
 
 import Groups from "./Groups";
 
-// import OutDownload from "../../../idk/modals/download/OutDownload";
-// import OutUpload from "../../../idk/modals/download/OutUpload";
-
 const SidebarWindow = (props) => {
   const { addRef } = props;
 
   const divBorderColor = useColorModeValue("gray.200", "gray.600");
 
   const add = useDisclosure();
-
-  // const {
-  //   isOpen: isOpenAdd,
-  //   onOpen: onOpenAdd,
-  //   onClose: onCloseAdd,
-  // } = useDisclosure();
-
-  const {
-    isOpen: isOpenLayout,
-    onOpen: onOpenLayout,
-    onClose: onCloseLayout,
-  } = useDisclosure();
-
-  const {
-    isOpen: isOpenLoadAll,
-    onOpen: onOpenLoadAll,
-    onClose: onCloseLoadAll,
-  } = useDisclosure();
-
-  const {
-    isOpen: isOpenMultiple,
-    onOpen: onOpenMultiple,
-    onClose: onCloseMultiple,
-  } = useDisclosure();
-
-  const {
-    isOpen: isOpenDownload,
-    onOpen: onOpenDownload,
-    onClose: onCloseDownload,
-  } = useDisclosure();
-
-  const {
-    isOpen: isOpenUpload,
-    onOpen: onOpenUpload,
-    onClose: onCloseUpload,
-  } = useDisclosure();
-
   const isLargeScreen = useMediaPredicate("(min-width: 830px)");
 
   return (
@@ -104,47 +64,10 @@ const SidebarWindow = (props) => {
               </Button>
             </Tooltip>
 
-            {/* <Menu>
-              <MenuButton
-                as={IconButton}
-                icon={<Dots />}
-                size={"sm"}
-                syle={{ zIndex: 99 }} />
-              <MenuList>
-                <MenuItem
-                  icon={<AddIcon />}
-                  fontSize={"sm"}
-                  onClick={onOpenMultiple}>
-                  Agregar Múltiples Casos
-                </MenuItem>
-
-                <MenuDivider />
-
-                <MenuItem
-                  icon={<BsReverseLayoutTextSidebarReverse />}
-                  fontSize={"sm"}
-                  onClick={onOpenLayout}>
-                  Layout
-                </MenuItem>
-
-                <MenuItem
-                  icon={<CgLayoutList />}
-                  fontSize={"sm"}
-                  onClick={onOpenLoadAll}>
-                  Cargar Layout en todos los Casos
-                </MenuItem>
-
-              </MenuList>
-            </Menu> */}
-
             {/* Modals and drawers */}
             <AddContainer
               isOpen={add.isOpen}
               onClose={add.onClose} />
-
-            {/* <AddMultipleCases
-              isOpen={isOpenMultiple}
-              onClose={onCloseMultiple} /> */}
 
             {/* <LayoutContainer
               isOpen={isOpenLayout}
@@ -152,11 +75,6 @@ const SidebarWindow = (props) => {
               displayWritingButton /> */}
 
             {/* <LoadLayout isOpen={isOpenLoadAll} onClose={onCloseLoadAll} /> */}
-
-            {/* <OutDownload isOpen={isOpenDownload} onClose={onCloseDownload} /> */}
-
-            {/* <OutUpload isOpen={isOpenUpload} onClose={onCloseUpload} /> */}
-
           </Flex>
 
           <Divider />

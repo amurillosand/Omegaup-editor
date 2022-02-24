@@ -62,6 +62,7 @@ const CasesWindow = () => {
             showOut && <OutWindow />}
         </HStack> */}
       </Flex>
+      
       {/* 
       <HStack pos={"fixed"} right={10} bottom={5}>
         <Tooltip label={"Ir hacia arriba | Ctrl + T"} mr={2}>
