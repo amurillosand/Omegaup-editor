@@ -22,64 +22,13 @@ import AddGroup from "./AddGroup";
 
 import { useAppContext } from "../../../AppContext";
 
-export function calculatePoints(groups) {
-  let maxPoints = 100;
-  let notDefinedCount = 0;
-
-  groups.forEach((group) => {
-    console.log(group);
-    if (group.name === "sin_grupo") {
-      group.cases.forEach((testCase) => {
-        if (testCase.defined) {
-          maxPoints -= testCase.points;
-        } else {
-          notDefinedCount++;
-        }
-      });
-    } else {
-      if (group.defined) {
-        maxPoints -= group.points;
-      } else {
-        notDefinedCount++;
-      }
-    }
-  });
-
-  let individualPoints = 0;
-  if (notDefinedCount > 0) {
-    individualPoints = maxPoints / notDefinedCount;
-  }
-
-  console.log("maxPoints:", maxPoints, " notDefinedCount:", notDefinedCount);
-
-  return groups.map((group) => {
-    if (group.name === "sin_grupo") {
-      group.points = 0;
-      group.cases = group.cases.map((testCase) => {
-        if (!testCase.defined) {
-          testCase.points = individualPoints;
-        }
-        return testCase;
-      });
-    } else if (!group.defined) {
-      group.points = individualPoints;
-    }
-    return group;
-  });
-}
-
 const AddContainer = (props) => {
   const { isOpen, onClose } = props;
-  const { cases, groups, setGroups } = useAppContext();
+  const { setGroups, calculatePoints } = useAppContext();
 
   useEffect(() => {
-    console.log("Calculate points");
-    setGroups(calculatePoints(groups));
-
+    setGroups(groups => calculatePoints(groups));
   }, [isOpen]);
-
-  console.log("groups:", groups);
-  console.log("cases:", cases);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -105,15 +54,6 @@ const AddContainer = (props) => {
               <TabPanel>
                 <AddCase onClose={onClose} />
               </TabPanel>
-
-              {/* <TabPanel>
-                <AddMultipleCases
-                  isOpen={isOpen}
-                  onClose={onClose}
-                  addCase={addCase}
-                  removeCase={removeCase}
-                  groups={groups} />
-              </TabPanel> */}
             </TabPanels>
           </Tabs>
         </ModalBody>

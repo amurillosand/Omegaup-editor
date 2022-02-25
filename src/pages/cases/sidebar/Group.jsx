@@ -35,41 +35,25 @@ import {
   EditIcon,
 } from "@chakra-ui/icons";
 
-// import DeleteGroupCases from "../../../idk/modals/delete/DeleteGroupCases";
-// import EditGroupContainer from "../../../idk/modals/edit/EditGroupContainer";
-// import DeleteGroup from "../../../idk/modals/delete/DeleteGroup";
+import EraseAllGroupCases from "../../../libs/modals/erase/EraseAllGroupCases";
+import EraseGroup from "../../../libs/modals/erase/EraseGroup";
+import EditGroupContainer from "../../../libs/modals/edit/EditGroupContainer";
 
-import CaseItem from "./Case";
+import Case from "./Case";
 import { useAppContext } from "../../../AppContext";
 
 const Group = (props) => {
+  const { setGroups, calculatePoints } = useAppContext();
   const { name, defined, points, groupId, cases } = props;
 
   const [showCases, setShowCases] = useState(name === "sin_grupo");
 
-  // const inputData = useStoreState((state) => state.input.data);
-  // const problemName = useStoreState((state) => state.title.titleName);
-
   const isLargeScreen = useMediaPredicate("(min-width: 830px)");
   const borderColor = useColorModeValue("gray.200", "gray.600");
 
-  const {
-    isOpen: isOpenEdit,
-    onOpen: onOpenEdit,
-    onClose: onCloseEdit,
-  } = useDisclosure();
-
-  const {
-    isOpen: isOpenRemove,
-    onOpen: onOpenRemove,
-    onClose: onCloseRemove,
-  } = useDisclosure();
-
-  const {
-    isOpen: isOpenRemoveCases,
-    onOpen: onOpenRemoveCases,
-    onClose: onCloseRemoveCases,
-  } = useDisclosure();
+  const editGroup = useDisclosure();
+  const eraseGroup = useDisclosure();
+  const eraseAllCases = useDisclosure();
 
   // This is necessary because otherwise it will toggle when the user clicks on the 3-dots/ menu button
   function handleCasesToggleClick(event) {
@@ -78,6 +62,10 @@ const Group = (props) => {
       event.currentTarget.clientWidth;
     if (percentage < 80) setShowCases(!showCases);
   }
+
+  React.useEffect(() => {
+    setGroups(groups => calculatePoints(groups));
+  }, [editGroup.isOpen, eraseGroup.isOpen, eraseAllCases.isOpen]);
 
   if (name === "sin_grupo" && cases.length === 0) {
     return <></>;
@@ -127,15 +115,15 @@ const Group = (props) => {
                     <MenuItem
                       icon={<EditIcon />}
                       fontSize={"sm"}
-                      onClick={onOpenEdit}>
-                      Editar Grupo
+                      onClick={editGroup.onOpen}>
+                      Editar grupo
                     </MenuItem>
 
                     <MenuItem
                       icon={<DeleteIcon />}
                       fontSize={"sm"}
-                      onClick={onOpenRemove}>
-                      Eliminar Grupo
+                      onClick={eraseGroup.onOpen}>
+                      Borrar grupo
                     </MenuItem>
                   </>
                 )}
@@ -143,7 +131,7 @@ const Group = (props) => {
                 <MenuItem
                   icon={<HiOutlineDocumentRemove />}
                   fontSize={"sm"}
-                  onClick={onOpenRemoveCases}>
+                  onClick={eraseAllCases.onOpen}>
                   Borrar todos los casos
                 </MenuItem>
 
@@ -151,35 +139,34 @@ const Group = (props) => {
               </MenuList>
             </Menu>
 
-            {/* Modals / Drawers */}
-            {/* <EditGroupContainer
+            <EditGroupContainer
               {...props}
-              isOpen={isOpenEdit}
-              onClose={onCloseEdit} />
+              isOpen={editGroup.isOpen}
+              onClose={editGroup.onClose} />
 
-            <DeleteGroup
-              isOpen={isOpenRemove}
-              onClose={onCloseRemove}
+            <EraseGroup
+              isOpen={eraseGroup.isOpen}
+              onClose={eraseGroup.onClose}
               groupId={groupId} />
 
-            <DeleteGroupCases
-              isOpen={isOpenRemoveCases}
-              onClose={onCloseRemoveCases}
+            <EraseAllGroupCases
+              isOpen={eraseAllCases.isOpen}
+              onClose={eraseAllCases.onClose}
               groupId={groupId}
-              groupName={name} /> */}
+              groupName={name} />
           </HStack>
         </Box>
 
         <Box ml={2}>
           {cases && showCases &&
-            cases.cases.map((element) => (
+            cases.map((element) => (
               <motion.div
                 className={name}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 style={{ display: "inline-block" }}
                 key={element.caseId}>
-                <CaseItem {...element} shouldShowPoints={name === "sin_grupo"} />
+                <Case {...element} shouldShowPoints={name === "sin_grupo"} />
               </motion.div>
             ))
           }

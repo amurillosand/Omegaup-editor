@@ -5,11 +5,11 @@ import Group from "./Group";
 import { useAppContext } from "../../../AppContext";
 
 const Groups = () => {
-  const { cases } = useAppContext();
+  const { groups } = useAppContext();
 
   return (
     <Box mt={2} mb={10}>
-      {cases.map((group) => (
+      {groups.map((group) => (
         <Group {...group} key={group.groupId} />
       ))}
     </Box>
