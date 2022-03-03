@@ -25,7 +25,6 @@ import { HiOutlineDotsVertical as Dots } from "react-icons/hi";
 import { AddIcon, DownloadIcon } from "@chakra-ui/icons";
 
 import AddContainer from "../../../libs/modals/add/AddContainer";
-// import AddMultipleCases from "../../../idk/modals/add/AddMultipleCases";
 
 import Groups from "./Groups";
 
@@ -64,17 +63,9 @@ const SidebarWindow = (props) => {
               </Button>
             </Tooltip>
 
-            {/* Modals and drawers */}
             <AddContainer
               isOpen={add.isOpen}
               onClose={add.onClose} />
-
-            {/* <LayoutContainer
-              isOpen={isOpenLayout}
-              onClose={onCloseLayout}
-              displayWritingButton /> */}
-
-            {/* <LoadLayout isOpen={isOpenLoadAll} onClose={onCloseLoadAll} /> */}
           </Flex>
 
           <Divider />

@@ -81,7 +81,7 @@ const MainWindow = () => {
           </TabList>
 
           <TabPanels>
-            {/* <TabPanel>
+            <TabPanel>
               <SolutionWindow />
             </TabPanel>
 
@@ -91,7 +91,7 @@ const MainWindow = () => {
 
             <TabPanel>
               <GeneratorWindow />
-            </TabPanel> */}
+            </TabPanel>
 
             <TabPanel>
               <CasesWindow />

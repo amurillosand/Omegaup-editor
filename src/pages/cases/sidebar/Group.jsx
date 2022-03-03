@@ -37,7 +37,7 @@ import {
 
 import EraseAllGroupCases from "../../../libs/modals/erase/EraseAllGroupCases";
 import EraseGroup from "../../../libs/modals/erase/EraseGroup";
-import EditGroupContainer from "../../../libs/modals/edit/EditGroupContainer";
+import EditGroup from "../../../libs/modals/edit/EditGroup";
 
 import Case from "./Case";
 import { useAppContext } from "../../../AppContext";
@@ -139,7 +139,7 @@ const Group = (props) => {
               </MenuList>
             </Menu>
 
-            <EditGroupContainer
+            <EditGroup
               {...props}
               isOpen={editGroup.isOpen}
               onClose={editGroup.onClose} />
@@ -166,7 +166,7 @@ const Group = (props) => {
                 animate={{ opacity: 1, y: 0 }}
                 style={{ display: "inline-block" }}
                 key={element.caseId}>
-                <Case {...element} shouldShowPoints={name === "sin_grupo"} />
+                <Case caseInfo={element} shouldShowPoints={name === "sin_grupo"} />
               </motion.div>
             ))
           }

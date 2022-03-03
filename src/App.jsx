@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppContext } from "./AppContext";
 import { useState } from "react";
 
+import useStateCallback from "./components/useStateCallback";
+
 import { v4 as uuid } from "uuid";
 import { fileToString } from "./libs/other/toString"
 import writingTemplate from "./pages/writing/template.txt"
@@ -25,8 +27,7 @@ export const App = () => {
 
   const [writing, setWriting] = useState("");
   const [title, setTitle] = useState("");
-  const [groups, setGroups] = useState([]);
-  const [change, setChange] = useState(false);
+  const [groups, setGroups] = useStateCallback([]);
 
   useEffect(() => {
     fileToString(writingTemplate, (data) => {
@@ -91,7 +92,7 @@ export const App = () => {
     });
   }
 
-  function addCase(newCase) {
+  function addCase(newCase, callback = undefined) {
     setGroups(prevGroups => {
       return prevGroups.map(group => {
         if (group.groupId === newCase.groupId) {
@@ -103,14 +104,14 @@ export const App = () => {
         }
         return group;
       });
-    });
+    }, callback);
   }
 
   function addGroup(newGroup) {
-    setGroups((prevGroups) => ([...prevGroups, newGroup]));
+    setGroups(prevGroups => [...prevGroups, newGroup]);
   }
 
-  function eraseCase(caseToErase) {
+  function eraseCase(caseToErase, callback = undefined) {
     setGroups(prevGroups => {
       return prevGroups.map(group => {
         if (group.groupId === caseToErase.groupId) {
@@ -122,7 +123,7 @@ export const App = () => {
         }
         return group;
       });
-    });
+    }, callback);
   }
 
   function eraseGroup(groupId) {
@@ -143,24 +144,24 @@ export const App = () => {
     });
   }
 
-  function editCase(caseModified) {
-    setGroups(prevGroups => {
-      return prevGroups.map(group => {
-        if (group.groupId === caseModified.groupId) {
-          return {
-            ...group,
-            cases: group.cases.filter(testCase => testCase.caseId !== caseModified.caseId).concat(caseModified)
-          }
-        }
-        return group;
-      });
+  function editCase(caseModified, callback = undefined) {
+    eraseCase({
+      ...caseModified.info,
+      groupId: caseModified.lastGroupId
+    }, () => {
+      addCase(caseModified, callback);
     });
   }
 
   function editGroup(groupModified) {
+    console.log(groupModified);
+
     setGroups(prevGroups => {
       return prevGroups.map(group => {
-        return group.groupId === groupModified.groupId ? groupModified : group;
+        if (group.groupId === groupModified.groupId) {
+          return groupModified;
+        }
+        return group;
       });
     });
   }

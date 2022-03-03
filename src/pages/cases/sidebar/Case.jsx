@@ -1,13 +1,15 @@
 import React from "react";
 import { Badge, Button, HStack } from "@chakra-ui/react";
 
-const Case = (props) => {
-  const { name, points, caseId, groupId, defined, shouldShowPoints } = props;
+import { useCaseContext } from "../CasesWindow";
 
-  const [selectedCase, setSelectedCase] = React.useState(0);
+const Case = (props) => {
+  const { selected, setSelected } = useCaseContext();
+  const { caseInfo, shouldShowPoints } = props;
 
   function handleSelectedCase() {
-    setSelectedCase({ caseId: caseId, groupId: groupId });
+    setSelected(caseInfo);
+
     // if (goUp) {
     //   window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     // }
@@ -18,12 +20,12 @@ const Case = (props) => {
       variant={"ghost"}
       size={"sm"}
       onClick={() => handleSelectedCase()}
-      isActive={selectedCase.caseId === caseId && selectedCase.groupId === groupId}>
+      isActive={selected.caseId === caseInfo.caseId && selected.groupId === caseInfo.groupId}>
       <HStack>
-        <span>{name}</span>
+        <span> {caseInfo.name} </span>
         {shouldShowPoints && (
-          <Badge colorScheme={defined ? "green" : "blue"}>
-            {points.toFixed(2)}
+          <Badge colorScheme={caseInfo.defined ? "green" : "blue"}>
+            {caseInfo.points.toFixed(2)}
           </Badge>
         )}
       </HStack>

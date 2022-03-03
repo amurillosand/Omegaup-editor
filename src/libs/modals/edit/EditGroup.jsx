@@ -5,15 +5,18 @@ import {
   FormHelperText,
   FormLabel,
   Input,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
-  NumberInputStepper,
   Select,
   toast,
   useToast,
   Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
 } from "@chakra-ui/react";
 
 import { useEffect, useRef, useState } from "react";
@@ -21,7 +24,7 @@ import { useAppContext } from "../../../AppContext";
 
 const EditGroup = (props) => {
   const { groups, editGroup, maxPointsAvailable } = useAppContext();
-  const { groupId, name, points, defined, onClose, cases } = props;
+  const { groupId, name, points, defined, isOpen, onClose, cases } = props;
 
   const [autoPoints, setAutoPoints] = useState(!defined);
 
@@ -68,56 +71,68 @@ const EditGroup = (props) => {
   const [maxPoints, setMaxPoints] = useState(maxPointsAvailable(groups));
 
   useEffect(() => {
-    setMaxPoints(Math.min(100, maxPointsAvailable(groups).maxPoints));
+    const kMaxPoints = maxPointsAvailable(groups).maxPoints + points;
+    setMaxPoints(Math.min(100, kMaxPoints));
   }, [pointsRef.current]);
 
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
-      <FormControl mt={3} isRequired>
-        <FormLabel> Nombre del grupo </FormLabel>
-        <Input
-          onChange={(e) => (groupName.current = e.target.value)}
-          defaultValue={name}
-        />
-        <FormHelperText> Sin espacios </FormHelperText>
-      </FormControl>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
 
-      <FormControl mt={5}>
-        <FormLabel> Puntaje </FormLabel>
-        <NumberInput
-          defaultValue={points}
-          onChange={(e, valueAsNumber) => (pointsRef.current = valueAsNumber)}
-          min={0}
-          max={maxPoints}
-          isDisabled={autoPoints}>
-          <NumberInputField />
-        </NumberInput>
+      <ModalContent>
+        <ModalHeader> Editar grupo </ModalHeader>
+        <ModalCloseButton />
 
-        {autoPoints && (
-          <FormHelperText>
-            El programa calculará automáticamente el puntaje
-          </FormHelperText>
-        )}
+        <ModalBody mb={5}>
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <FormControl mt={3} isRequired>
+              <FormLabel> Nombre del grupo </FormLabel>
+              <Input
+                onChange={(e) => (groupName.current = e.target.value)}
+                defaultValue={name}
+              />
+              <FormHelperText> Sin espacios. </FormHelperText>
+            </FormControl>
 
-        <Checkbox
-          mt={3}
-          isChecked={autoPoints}
-          onChange={() => {
-            setAutoPoints(!autoPoints);
-            pointsDefinedRef.current = autoPoints;
-          }}>
-          Puntaje automático
-        </Checkbox>
-      </FormControl>
+            <FormControl mt={5}>
+              <Checkbox
+                mt={3}
+                isChecked={autoPoints}
+                onChange={() => {
+                  setAutoPoints(!autoPoints);
+                  pointsDefinedRef.current = autoPoints;
+                }}>
+                <FormLabel mt={2}> {autoPoints ? "Puntaje automático" : "Puntaje"} </FormLabel>
+              </Checkbox>
 
-      <Button
-        colorScheme="green"
-        isFullWidth
-        mt={10}
-        type={"submit"}>
-        Editar grupo
-      </Button>
-    </form>
+              <NumberInput
+                defaultValue={points}
+                onChange={(e, valueAsNumber) => (pointsRef.current = valueAsNumber)}
+                min={0}
+                max={maxPoints}
+                isDisabled={autoPoints}>
+                <NumberInputField />
+              </NumberInput>
+
+              {autoPoints && (
+                <FormHelperText>
+                  El programa calculará automáticamente el puntaje
+                </FormHelperText>
+              )}
+            </FormControl>
+
+            <Button
+              colorScheme="green"
+              isFullWidth
+              mt={10}
+              type={"submit"}>
+              Editar grupo
+            </Button>
+          </form>
+
+        </ModalBody>
+      </ModalContent>
+    </Modal >
   );
 };
 

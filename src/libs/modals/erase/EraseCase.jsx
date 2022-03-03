@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import {
   Button,
   Modal,
@@ -12,10 +12,12 @@ import {
 } from "@chakra-ui/react";
 
 import { useAppContext } from "../../../AppContext";
+import { useCaseContext } from "../../../pages/cases/CasesWindow";
 
 const EraseCase = (props) => {
+  const { selected, setSelected } = useCaseContext();
   const { eraseCase } = useAppContext();
-  const { isOpen, onClose, groupId, caseId } = props;
+  const { isOpen, onClose } = props;
 
   const toast = useToast();
 
@@ -27,7 +29,7 @@ const EraseCase = (props) => {
         <ModalCloseButton />
 
         <ModalBody>
-          ¿Estás seguro que deseas borrar este caso? 
+          ¿Estás seguro que deseas borrar este caso?
           Este cambio no se puede deshacer
         </ModalBody>
 
@@ -35,6 +37,7 @@ const EraseCase = (props) => {
           <Button variant={"ghost"} mr={3} onClick={onClose}>
             Cerrar
           </Button>
+          
           <Button
             colorScheme="red"
             type={"submit"}
@@ -47,8 +50,14 @@ const EraseCase = (props) => {
               });
 
               eraseCase({
-                caseId: caseId,
-                groupId: groupId,
+                caseId: selected.caseId,
+                groupId: selected.groupId,
+              }, () => {
+                setSelected(prevSelected => ({
+                  ...prevSelected,
+                  caseId: null,
+                  groupId: null,
+                }));
               });
 
               onClose();
@@ -57,7 +66,7 @@ const EraseCase = (props) => {
           </Button>
         </ModalFooter>
       </ModalContent>
-    </Modal>
+    </Modal >
   );
 };
 

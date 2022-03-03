@@ -21,16 +21,17 @@ const AddGroup = (props) => {
   const { groups, addGroup } = useAppContext();
   const [autoPoints, setAutoPoints] = useState(true);
 
-  const groupName = useRef("");
-  const points = useRef(0);
-  const pointsDefined = useRef(false);
+  const groupNameRef = useRef("");
+  const pointsRef = useRef(0);
+  const pointsDefinedRef = useRef(false);
+  const numberOfCasesRef = useRef(1);
 
   const toast = useToast();
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    const validName = groupName.current.replaceAll(" ", "_");
+    const validName = groupNameRef.current.replaceAll(" ", "_");
 
     let isValid = true;
     groups.forEach((groupElement) => {
@@ -50,12 +51,27 @@ const AddGroup = (props) => {
       return;
     }
 
+    const groupId = uuid();
+
+    const cases = [];
+    for (let numOfCase = 1; numOfCase <= numberOfCasesRef.current; numOfCase++) {
+      cases.push({
+        caseId: uuid(),
+        name: numOfCase.toString(),
+        groupId: groupId,
+        points: 0,
+        defined: false,
+        input: "",
+        output: "",
+      });
+    }
+
     addGroup({
-      groupId: uuid(),
+      groupId: groupId,
       name: validName,
-      points: points.current,
-      defined: pointsDefined.current,
-      cases: [],
+      points: pointsRef.current,
+      defined: pointsDefinedRef.current,
+      cases: cases,
     });
 
     onClose();
@@ -65,14 +81,23 @@ const AddGroup = (props) => {
     <form onSubmit={(e) => handleSubmit(e)}>
       <FormControl mt={3} isRequired>
         <FormLabel> Nombre del grupo </FormLabel>
-        <Input onChange={(e) => (groupName.current = e.target.value)} />
-        <FormHelperText> Sin espacios </FormHelperText>
+        <Input onChange={(e) => (groupNameRef.current = e.target.value)} />
+        <FormHelperText> Sin espacios. </FormHelperText>
       </FormControl>
 
       <FormControl mt={5}>
-        <FormLabel> Puntaje </FormLabel>
+        <Checkbox
+          mt={3}
+          isChecked={autoPoints}
+          onChange={() => {
+            setAutoPoints(!autoPoints);
+            pointsDefinedRef.current = autoPoints;
+          }}>
+          <FormLabel mt={2}> {autoPoints ? "Puntaje automático" : "Puntaje"} </FormLabel>
+        </Checkbox>
+
         <NumberInput
-          onChange={(e, valueAsNumber) => (points.current = valueAsNumber)}
+          onChange={(e, valueAsNumber) => (pointsRef.current = valueAsNumber)}
           min={0}
           max={100}
           isDisabled={autoPoints}>
@@ -84,16 +109,15 @@ const AddGroup = (props) => {
             El programa calculará automáticamente el puntaje.
           </FormHelperText>
         )}
+      </FormControl>
 
-        <Checkbox
-          mt={3}
-          isChecked={autoPoints}
-          onChange={() => {
-            setAutoPoints(!autoPoints);
-            pointsDefined.current = autoPoints;
-          }}>
-          Puntaje automático
-        </Checkbox>
+      <FormControl mt={5} isRequired>
+        <FormLabel> Número de casos </FormLabel>
+        <NumberInput
+          onChange={(e, valueAsNumber) => (numberOfCasesRef.current = valueAsNumber)}
+          min={1}>
+          <NumberInputField />
+        </NumberInput>
       </FormControl>
 
       <Button

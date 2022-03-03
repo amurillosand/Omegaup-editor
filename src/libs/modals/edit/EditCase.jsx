@@ -5,33 +5,37 @@ import {
   FormHelperText,
   FormLabel,
   Input,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
-  NumberInputStepper,
-  Select,
-  toast,
   useToast,
   Button,
   useColorModeValue,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
 } from "@chakra-ui/react";
 
-import RSelect from "react-select";
-import chakraColors from "../../other/chakraColors";
+import ReactSelectDark from "../../../components/ReactSelectDark"
+
 import { useEffect, useRef, useState } from "react";
 import { useAppContext } from "../../../AppContext";
+import { useCaseContext } from "../../../pages/cases/CasesWindow";
 
 const EditCase = (props) => {
+  const { selected, setSelected } = useCaseContext();
   const { groups, editCase, maxPointsAvailable } = useAppContext();
-  const { groupId, caseId, name, points, defined, onClose } = props;
+  const { isOpen, onClose } = props;
 
-  const [autoPoints, setAutoPoints] = useState(!defined);
-  const [selectedValue, setSelectedValue] = useState(groupId);
+  const [autoPoints, setAutoPoints] = useState(!selected.defined);
+  const [selectedGroupId, setSelectedGroupId] = useState(selected.groupId);
+  const [hasGroup, setHasGroup] = useState(selectedGroupId !== options[0].value);
 
-  const caseName = useRef(name);
-  const pointsRef = useRef(points);
-  const pointsDefined = useRef(defined);
+  const caseNameRef = useRef(selected.name);
+  const pointsRef = useRef(selected.points);
+  const pointsDefinedRef = useRef(selected.defined);
 
   const toast = useToast();
   const darkTheme = useColorModeValue(false, true);
@@ -43,27 +47,16 @@ const EditCase = (props) => {
     };
   });
 
-  const [hasGroup, setHasGroup] = useState(groupId !== options[0].value);
-
-  // Tengo que quitarlo primero del grupo donde estaba antes
-  // Tengo que agregarlo al nuevo grupo
-
   function handleSubmit(e) {
     e.preventDefault();
 
-    const validName = caseName.current.replaceAll(" ", "_");
+    const validName = caseNameRef.current.replaceAll(" ", "_");
 
     let isValid = true;
-    let selectedGroupId = selectedValue;
-
-    if (selectedGroupId === "") {
-      selectedGroupId = options[0].value;
-    }
-
-    groups.forEach((groupElement) => {
-      if (groupElement.groupId === groupId) {
-        groupElement.cases.forEach((caseElement) => {
-          if (caseElement.name === validName && validName !== name) {
+    groups.forEach((group) => {
+      if (group.groupId === selectedGroupId) {
+        group.cases.forEach((caseElement) => {
+          if (caseElement.name === validName && validName !== selected.name) {
             isValid = false;
             return;
           }
@@ -74,122 +67,115 @@ const EditCase = (props) => {
 
     if (!isValid) {
       toast({
-        title: "Error al crear grupo",
-        description: "No puedes tener grupos con el mismo nombre",
+        title: "Error al editar el caso",
+        description: "No puedes tener casos con el mismo nombre",
         status: "error",
         isClosable: true,
       });
       return;
     }
 
-    // cambiar el selected
     editCase({
-      case: {
-        caseId: caseId,
+      info: {
+        caseId: selected.caseId,
         name: validName,
         points: pointsRef.current,
         groupId: selectedGroupId,
-        defined: pointsDefined.current,
+        defined: pointsDefinedRef.current,
+        input: selected.input,
+        output: selected.output,
       },
-      lastId: groupId,
+      lastGroupId: selected.groupId,
+    }, () => {
+      setSelected(prevSelected => ({
+        ...prevSelected,
+        groupId: selectedGroupId,
+      }));
     });
-
-    handleGroupChange({ caseId: caseId, newGroupId: selectedGroupId });
 
     onClose();
   }
 
-  function handleSelectChange(event) {
-    setSelectedValue(event.value);
+  function handleSelectGroupId(event) {
+    setSelectedGroupId(event.value);
     setHasGroup(event.value !== options[0].value);
   }
 
   const [maxPoints, setMaxPoints] = useState(maxPointsAvailable(groups));
-
   useEffect(() => {
     setMaxPoints(Math.min(100, maxPointsAvailable(groups).maxPoints));
   }, [pointsRef.current]);
 
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
-      <FormControl mt={3} isRequired>
-        <FormLabel> Nombre del caso</FormLabel>
-        <Input
-          onChange={(e) => (caseName.current = e.target.value)}
-          defaultValue={name}
-        />
-        <FormHelperText>En minúsculas y sin espacios</FormHelperText>
-      </FormControl>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader> Editar caso </ModalHeader>
+        <ModalCloseButton />
 
-      <FormControl mt={5} isRequired>
-        <FormLabel> Nombre del grupo </FormLabel>
-        <RSelect
-          defaultValue={options.find((obj) => obj.value === groupId)}
-          options={options}
-          value={options.find((obj) => obj.value === selectedValue)}
-          onChange={handleSelectChange}
-          theme={
-            darkTheme
-              ? (theme) => ({
-                ...theme,
-                colors: {
-                  ...theme.colors,
-                  primary: chakraColors.blue[200], // Selected
-                  primary25: chakraColors.gray[600], // Ring
-                  primary50: chakraColors.blue[600], // Ring
-                  primary75: chakraColors.blue[700], // Ring
-                  neutral0: chakraColors.gray[700],
-                  neutral5: chakraColors.gray[700],
-                  neutral10: chakraColors.gray[700],
-                  neutral20: chakraColors.gray[600],
-                  neutral30: chakraColors.gray[500],
-                  neutral40: chakraColors.white,
-                  neutral50: chakraColors.white,
-                  neutral80: chakraColors.white,
-                  neutral90: chakraColors.white,
-                },
-              })
-              : undefined
-          }
-        />
+        <ModalBody mb={5}>
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <FormControl mt={3} isRequired>
+              <FormLabel> Nombre del caso</FormLabel>
+              <Input
+                onChange={(e) => (caseNameRef.current = e.target.value)}
+                defaultValue={selected.name}
+              />
+              <FormHelperText> Sin espacios. </FormHelperText>
+            </FormControl>
 
-      </FormControl>
-      {!hasGroup && (
-        <FormControl mt={5}>
-          <FormLabel> Puntaje </FormLabel>
-          <NumberInput
-            onChange={(e, valueAsNumber) => (pointsRef.current = valueAsNumber)}
-            defaultValue={points}
-            min={0}
-            max={maxPoints}
-            isDisabled={autoPoints}>
-            <NumberInputField />
-          </NumberInput>
-          {autoPoints && (
-            <FormHelperText>
-              El programa calculará automáticamente el puntaje
-            </FormHelperText>
-          )}
-          <Checkbox
-            mt={3}
-            isChecked={autoPoints}
-            onChange={() => {
-              setAutoPoints(!autoPoints);
-              pointsDefined.current = autoPoints;
-            }}>
-            Puntaje automático
-          </Checkbox>
-        </FormControl>
-      )}
+            {/* <FormControl mt={5} isRequired>
+              <FormLabel> Nombre del grupo </FormLabel>
+              <ReactSelectDark
+                defaultValue={options.find((obj) => obj.value === selectedGroupId)}
+                onChange={handleSelectGroupId}
+                value={options.find((obj) => obj.value === selectedGroupId)}
+                options={options}
+                darkTheme={darkTheme} />
+            </FormControl> */}
 
-      <Button
-        colorScheme="green"
-        isFullWidth
-        mt={10}
-        type={"submit"}>
-        Editar caso
-      </Button>
-    </form>
+            {/* {!hasGroup && (
+              <FormControl mt={5}>
+                <Checkbox
+                  mt={3}
+                  isChecked={autoPoints}
+                  onChange={() => {
+                    setAutoPoints(!autoPoints);
+                    pointsDefinedRef.current = autoPoints;
+                  }}>
+                  <FormLabel mt={2}> {autoPoints ? "Puntaje automático" : "Puntaje"} </FormLabel>
+                </Checkbox>
+
+                <NumberInput
+                  onChange={(e, valueAsNumber) => (pointsRef.current = valueAsNumber)}
+                  defaultValue={selected.points}
+                  min={0}
+                  max={maxPoints}
+                  isDisabled={autoPoints}>
+                  <NumberInputField />
+                </NumberInput>
+
+                {autoPoints && (
+                  <FormHelperText>
+                    El programa calculará automáticamente el puntaje
+                  </FormHelperText>
+                )}
+              </FormControl>
+            )} */}
+
+            <Button
+              colorScheme="green"
+              isFullWidth
+              mt={10}
+              type={"submit"}>
+              Editar caso
+            </Button>
+          </form>
+
+        </ModalBody>
+
+      </ModalContent>
+    </Modal>
   );
 };
 

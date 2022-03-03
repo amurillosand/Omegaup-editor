@@ -18,7 +18,6 @@ import {
 
 import AddCase from "./AddCase";
 import AddGroup from "./AddGroup";
-// import AddMultipleCases from "./AddMultipleCases";
 
 import { useAppContext } from "../../../AppContext";
 
