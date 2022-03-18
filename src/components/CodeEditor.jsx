@@ -22,7 +22,7 @@ import "ace-builds/src-min-noconflict/ext-language_tools";
 
 import { useState, useEffect } from "react";
 import { languages } from "../libs/coding/codeLanguages"
-import { run } from "../libs/coding/runCodeApi";
+import { runSingle, runMultiple, getResult } from "../libs/coding/runCodeApi";
 
 languages.forEach((language) => {
   require(`ace-builds/src-noconflict/mode-${language.ace}`);
@@ -32,7 +32,7 @@ languages.forEach((language) => {
 const CodeEditor = (props) => {
   const { code, setCode, language, setLanguage, height } = props;
   const [fontSize, setFontSize] = useState(14);
-  const [languageIndex, setLanguageIndex] = useState(1);
+  const [languageIndex, setLanguageIndex] = useState(0);
 
   const codeStyle = useColorModeValue("tomorrow", "monokai");
   const codeToolbarStyle = useColorModeValue("#F9F9F9", "#2C323D");
@@ -43,13 +43,37 @@ const CodeEditor = (props) => {
 
   async function runCode(event) {
     event.preventDefault();
-    const result = await run(code, language, "5\n hola\n");
+
+    // const result = await runSingle(code, language, input);
+    const batch = {
+      submissions: [
+        {
+          language_id: 54,
+          source_code: code,
+          stdin: "1"
+        },
+        {
+          language_id: 54,
+          source_code: code,
+          stdin: "2"
+        },
+        {
+          language_id: 54,
+          source_code: code,
+          stdin: "3"
+        }
+      ]
+    }
+
+    const result = await runMultiple(batch);
     console.log(result);
   }
 
   useEffect(() => {
     setLanguage(languages[languageIndex].extension);
   }, [languageIndex]);
+
+  console.log(code)
 
   return (
     <>
@@ -77,6 +101,8 @@ const CodeEditor = (props) => {
               ))}
             </Select>
 
+            <Button onClick={(e) => runCode(e)}> Correr </Button>
+
             <Text fontSize={"smaller"}> Tamaño</Text>
             <NumberInput
               min={1}
@@ -87,6 +113,7 @@ const CodeEditor = (props) => {
               onChange={(valueAsString, valueAsNumber) => handleFontSize(valueAsNumber)}>
               <NumberInputField />
             </NumberInput>
+
           </HStack>
         </Box>
 

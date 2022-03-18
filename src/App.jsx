@@ -185,7 +185,7 @@ export const App = () => {
 
           <BrowserRouter>
             <Routes>
-              <Route path="/creator" element={
+              <Route path="/editor" element={
                 <>
                   <Header />
                   <MainWindow />
