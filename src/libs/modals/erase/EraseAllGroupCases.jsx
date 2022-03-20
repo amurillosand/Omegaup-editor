@@ -11,7 +11,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-import { useAppContext } from "../../../AppContext";
+import { useAppContext } from "../../../App";
 
 const EraseAllGroupCases = (props) => {
   const { eraseAllGroupCases } = useAppContext();

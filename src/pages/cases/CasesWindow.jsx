@@ -8,14 +8,19 @@ import {
   IconButton,
   Center,
   Tooltip,
+  Divider,
+  VStack,
+  Input,
 } from "@chakra-ui/react";
 
 import { useEffect, useRef, useState } from "react";
 import { ChevronUpIcon, UpDownIcon } from "@chakra-ui/icons";
 
+import SadSlot from "../../components/SadSloth";
+import SelectACaseSloth from "../../components/SelectACaseSloth";
 import SidebarWindow from "./sidebar/SidebarWindow";
-import InputWindow from "./input/InputWindow";
-import OutWindow from "./output/OutWindow";
+import TopBar from "./TopBar";
+import TextArea from "./TextArea";
 
 const CaseContext = React.createContext(null);
 
@@ -24,7 +29,9 @@ export function useCaseContext() {
 }
 
 const CasesWindow = () => {
-  const [showOut, setShowOut] = useState(false);
+  const [showOutput, setShowOutput] = useState(true);
+  const [showInput, setShowInput] = useState(true);
+
   const [selected, setSelected] = useState({
     caseId: null,
     name: "None",
@@ -35,7 +42,6 @@ const CasesWindow = () => {
     output: "",
   });
 
-  const showOutRef = useRef(null);
   const addCaseRef = useRef(null);
 
   useEffect(() => {
@@ -47,17 +53,13 @@ const CasesWindow = () => {
 
   function handleKeyPress(key) {
     if (key.ctrlKey) {
-      if (key.which === 72 && showOutRef.current !== null) {
-        showOutRef.current.click();
+      if (key.which === 73) {
+        setShowInput(prevShowInput => !prevShowInput);
       }
-      if (key.which === 65 && addCaseRef.current !== null) {
-        addCaseRef.current.click(); // A
+      if (key.which === 79) {
+        setShowOutput(prevShowOutput => !prevShowOutput);
       }
     }
-  }
-
-  function handleGoUp() {
-    // window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }
 
   return (
@@ -67,40 +69,59 @@ const CasesWindow = () => {
           <SidebarWindow addRef={addCaseRef} />
         </Box>
 
-        <HStack w={"100%"}>
-          <InputWindow />
+        <Box w={"100%"} h={"100%"}>
+          {selected.caseId === null ? (
+            <SelectACaseSloth />
+          ) : (
+            <div>
+              <TopBar />
+              <Divider mb={5} />
 
-          {(selected.caseId !== null && showOut) && (
-            <OutWindow />
+              {(!showInput && !showOutput) && (
+                <SadSlot />
+              )}
+
+              <HStack w={"100%"}>
+                {showInput && (
+                  <TextArea description={"Entrada"} value={selected.input} />
+                )}
+                {showOutput && (
+                  <TextArea description={"Salida"} value={selected.output} />
+                )}
+              </HStack>
+            </div>
           )}
-        </HStack>
+        </Box>
+
       </Flex>
 
-      {/* 
-      <HStack pos={"fixed"} right={10} bottom={5}>
-        <Tooltip label={"Ir hacia arriba | Ctrl + T"} mr={2}>
-          <IconButton
-            onClick={() => handleGoUp()}
-            aria-label={"Go-up"}
-            icon={<ChevronUpIcon />}
-            size={"sm"}
-          />
-        </Tooltip>
-
+      <VStack pos={"fixed"} right={10} bottom={5}>
         <Button
-          disabled={selected.caseId === "None" || selected.caseId === "None"}
-          ref={showOutRef}
+          disabled={selected.caseId === null || selected.groupId === null}
           size={"sm"}
-          colorScheme={"green"}
-        // onClick={() => tabIndex === 2 && setShowOut(!showOut)}>
+          colorScheme={"twitter"}
+          onClick={() => setShowInput(prevShowInput => !prevShowInput)}>
           <HStack>
-            <Text> {showOut ? "Ocultar Salida" : "Mostrar Salida"}</Text>
+            <Text> {showInput ? "Ocultar entrada" : "Mostrar entrada"}</Text>
             <Text fontSize={"smaller"} opacity={"0.5"}>
-              Ctrl + H
+              Ctrl + I
             </Text>
           </HStack>
         </Button>
-      </HStack> */}
+
+        <Button
+          disabled={selected.caseId === null || selected.groupId === null}
+          size={"sm"}
+          colorScheme={"blue"}
+          onClick={() => setShowOutput(prevShowOutput => !prevShowOutput)}>
+          <HStack>
+            <Text> {showOutput ? "Ocultar salida" : "Mostrar salida"}</Text>
+            <Text fontSize={"smaller"} opacity={"0.5"}>
+              Ctrl + O
+            </Text>
+          </HStack>
+        </Button>
+      </VStack>
     </CaseContext.Provider >
   );
 };

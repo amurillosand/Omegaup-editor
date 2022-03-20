@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 
 import { useEffect, useRef, useState } from "react";
-import { useAppContext } from "../../../AppContext";
+import { useAppContext } from "../../../App";
 
 const EditGroup = (props) => {
   const { groups, editGroup, maxPointsAvailable } = useAppContext();

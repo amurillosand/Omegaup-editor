@@ -19,7 +19,7 @@ import {
 import AddCase from "./AddCase";
 import AddGroup from "./AddGroup";
 
-import { useAppContext } from "../../../AppContext";
+import { useAppContext } from "../../../App";
 
 const AddContainer = (props) => {
   const { isOpen, onClose } = props;

@@ -21,9 +21,9 @@ import "../../libs/markdown/editorStyles/react-mde-all.css";
 import "../../libs/aceStyles/darkTheme.css";
 
 import { fileToString } from "../../libs/other/toString"
-import informationFile from "./information.txt"
+import informationFile from "./information.txt";
 
-import { useAppContext } from "../../AppContext"
+import { useAppContext } from "../../App";
 import { useRef, useState } from "react";
 
 const GeneratorWindow = () => {

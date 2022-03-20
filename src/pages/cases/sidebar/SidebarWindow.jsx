@@ -45,7 +45,7 @@ const SidebarWindow = (props) => {
         borderColor={divBorderColor}>
 
         <Box width={"100%"}>
-          <Flex align={"center"} mb={4}>
+          <Flex align={"center"}  mb={3}>
             <Text mr={5} fontSize={"xl"} fontWeight={"bold"}>
               Grupos
             </Text>

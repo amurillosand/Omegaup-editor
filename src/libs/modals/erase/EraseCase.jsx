@@ -11,7 +11,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-import { useAppContext } from "../../../AppContext";
+import { useAppContext } from "../../../App";
 import { useCaseContext } from "../../../pages/cases/CasesWindow";
 
 const EraseCase = (props) => {
@@ -37,7 +37,7 @@ const EraseCase = (props) => {
           <Button variant={"ghost"} mr={3} onClick={onClose}>
             Cerrar
           </Button>
-          
+
           <Button
             colorScheme="red"
             type={"submit"}

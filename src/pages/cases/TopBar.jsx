@@ -10,19 +10,15 @@ import {
 
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
-import EraseCase from "../../../libs/modals/erase/EraseCase";
-import EditCase from "../../../libs/modals/edit/EditCase";
-import { useCaseContext } from "../CasesWindow";
-import { useAppContext } from "../../../AppContext";
+import EraseCase from "../../libs/modals/erase/EraseCase";
+import { useCaseContext } from "./CasesWindow";
+import { useAppContext } from "../../App";
 
 const TopBar = () => {
   const { groups } = useAppContext();
   const { selected } = useCaseContext();
 
-  const editCase = useDisclosure();
   const eraseCase = useDisclosure();
-
-  console.log(selected);
 
   const selectedGroup = groups.find((group) => group.groupId === selected.groupId);
 
@@ -33,16 +29,9 @@ const TopBar = () => {
           {selected.name}
         </Text>
 
-        <h2> ({selectedGroup.name}) </h2>
+        <h1> ({selectedGroup.name}) </h1>
 
         <Spacer />
-
-        <Button
-          leftIcon={<EditIcon />}
-          size={"sm"}
-          onClick={editCase.onOpen}>
-          Editar caso
-        </Button>
 
         <Button
           leftIcon={<DeleteIcon />}
@@ -51,10 +40,6 @@ const TopBar = () => {
           Eliminar caso
         </Button>
       </HStack>
-
-      {/* <EditCase
-        isOpen={editCase.isOpen}
-        onClose={editCase.onClose} /> */}
 
       <EraseCase
         isOpen={eraseCase.isOpen}

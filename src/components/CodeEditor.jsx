@@ -41,39 +41,9 @@ const CodeEditor = (props) => {
     setFontSize(size);
   }
 
-  async function runCode(event) {
-    event.preventDefault();
-
-    // const result = await runSingle(code, language, input);
-    const batch = {
-      submissions: [
-        {
-          language_id: 54,
-          source_code: code,
-          stdin: "1"
-        },
-        {
-          language_id: 54,
-          source_code: code,
-          stdin: "2"
-        },
-        {
-          language_id: 54,
-          source_code: code,
-          stdin: "3"
-        }
-      ]
-    }
-
-    const result = await runMultiple(batch);
-    console.log(result);
-  }
-
   useEffect(() => {
     setLanguage(languages[languageIndex].extension);
   }, [languageIndex]);
-
-  console.log(code)
 
   return (
     <>
@@ -100,8 +70,6 @@ const CodeEditor = (props) => {
                 </option>
               ))}
             </Select>
-
-            <Button onClick={(e) => runCode(e)}> Correr </Button>
 
             <Text fontSize={"smaller"}> Tamaño</Text>
             <NumberInput

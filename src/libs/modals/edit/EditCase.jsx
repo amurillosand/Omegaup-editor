@@ -21,7 +21,7 @@ import {
 import ReactSelectDark from "../../../components/ReactSelectDark"
 
 import { useEffect, useRef, useState } from "react";
-import { useAppContext } from "../../../AppContext";
+import { useAppContext } from "../../../App";
 import { useCaseContext } from "../../../pages/cases/CasesWindow";
 
 const EditCase = (props) => {

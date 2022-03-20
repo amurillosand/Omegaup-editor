@@ -19,7 +19,7 @@ import ReactSelectDark from "../../../components/ReactSelectDark"
 
 import { useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
-import { useAppContext } from "../../../AppContext";
+import { useAppContext } from "../../../App";
 
 const AddCase = (props) => {
   const { onClose } = props;

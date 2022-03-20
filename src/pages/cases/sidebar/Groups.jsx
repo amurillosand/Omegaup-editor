@@ -2,7 +2,7 @@ import React from "react";
 import { Box } from "@chakra-ui/react";
 import Group from "./Group";
 
-import { useAppContext } from "../../../AppContext";
+import { useAppContext } from "../../../App";
 
 const Groups = () => {
   const { groups } = useAppContext();

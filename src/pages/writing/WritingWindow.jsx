@@ -26,7 +26,7 @@ import markdownMath from "markdown-it-texmath";
 import katex from "katex";
 
 import ReactMde from "react-mde";
-import { useAppContext } from "../../AppContext";
+import { useAppContext } from "../../App";
 
 const WritingWindow = () => {
   const { writing, setWriting } = useAppContext();

@@ -4,7 +4,6 @@ import Navbar from "./pages/Navbar";
 import Header from "./pages/Header";
 import MainWindow from "./pages/MainWindow";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AppContext } from "./AppContext";
 import { useState } from "react";
 
 import useStateCallback from "./components/useStateCallback";
@@ -12,6 +11,12 @@ import useStateCallback from "./components/useStateCallback";
 import { v4 as uuid } from "uuid";
 import { fileToString } from "./libs/other/toString"
 import writingTemplate from "./pages/writing/template.txt"
+
+export const AppContext = React.createContext(null);
+
+export function useAppContext() {
+  return React.useContext(AppContext);
+}
 
 export const App = () => {
   const [generator, setGenerator] = useState({
@@ -154,7 +159,7 @@ export const App = () => {
   }
 
   function editGroup(groupModified) {
-    console.log(groupModified);
+    // console.log(groupModified);
 
     setGroups(prevGroups => {
       return prevGroups.map(group => {

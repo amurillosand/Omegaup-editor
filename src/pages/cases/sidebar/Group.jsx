@@ -40,7 +40,7 @@ import EraseGroup from "../../../libs/modals/erase/EraseGroup";
 import EditGroup from "../../../libs/modals/edit/EditGroup";
 
 import Case from "./Case";
-import { useAppContext } from "../../../AppContext";
+import { useAppContext } from "../../../App";
 
 const Group = (props) => {
   const { setGroups, calculatePoints } = useAppContext();

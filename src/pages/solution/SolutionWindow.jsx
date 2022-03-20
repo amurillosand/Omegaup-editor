@@ -19,7 +19,7 @@ import SadSloth from "../../components/SadSloth";
 
 import ReactMde from "react-mde";
 import { useRef, useState, useEffect } from "react";
-import { useAppContext } from "../../AppContext";
+import { useAppContext } from "../../App";
 
 const SolutionWindow = () => {
   const { solution, setSolution } = useAppContext();
@@ -87,7 +87,7 @@ const SolutionWindow = () => {
         {showSolution && (
           <Box ml={5} w={"100%"}>
             {/* <Text> Redacción </Text> */}
-            
+
             <Box className={style}>
               <ReactMde
                 ref={mdEditorRef}

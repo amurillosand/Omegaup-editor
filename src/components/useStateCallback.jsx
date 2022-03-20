@@ -12,13 +12,13 @@ function useStateCallback(initVal) {
     }
 
     if (typeof cbRef.current === "function") {
-      console.log("calling cb");
+      // console.log("calling callback");
       cbRef.current();
     }
   }, [val]);
 
   let setValCB = useCallback((newVal, cb) => {
-    console.log("setValCB", newVal);
+    // console.log("set value callback", newVal);
     cbRef.current = cb;
     setVal(newVal);
   }, []);

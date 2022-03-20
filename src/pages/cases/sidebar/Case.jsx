@@ -7,19 +7,11 @@ const Case = (props) => {
   const { selected, setSelected } = useCaseContext();
   const { caseInfo, shouldShowPoints } = props;
 
-  function handleSelectedCase() {
-    setSelected(caseInfo);
-
-    // if (goUp) {
-    //   window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-    // }
-  }
-
   return (
     <Button
       variant={"ghost"}
       size={"sm"}
-      onClick={() => handleSelectedCase()}
+      onClick={() => setSelected(caseInfo)}
       isActive={selected.caseId === caseInfo.caseId && selected.groupId === caseInfo.groupId}>
       <HStack>
         <span> {caseInfo.name} </span>

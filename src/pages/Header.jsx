@@ -15,17 +15,18 @@ import {
   AlertDialogFooter,
   AlertDialogBody,
   AlertDialog,
+  useToast,
 } from "@chakra-ui/react";
 import { AiFillEdit } from "react-icons/ai";
 import { AddIcon, DownloadIcon, TriangleDownIcon } from "@chakra-ui/icons";
 
-// import { generateProblem } from "../libs/downloadUpload/generateProblem";
-// import LoadProblem from "../idk/modals/load/LoadProblem";
-
-import { useAppContext } from "../AppContext"
+import { generateProblem } from "../libs/download/generateProblem";
+import { useAppContext } from "../App";
 
 const Header = () => {
   const { title, setTitle } = useAppContext();
+  const data = useAppContext();
+  const toast = useToast();
 
   const [isEditTitleActive, setIsEditTitleActive] = React.useState(false);
 
@@ -49,7 +50,14 @@ const Header = () => {
   }
 
   function handleGenerateProblem() {
-    // generateProblem();
+    toast({
+      title: `Generando problema \"${title}\"`,
+      description: "Se está generando el problema...\n Tenga paciencia",
+      status: "success",
+      isClosable: true,
+    });
+
+    generateProblem(data, toast);
   }
 
   return (
@@ -65,8 +73,7 @@ const Header = () => {
             onEdit={() => setIsEditTitleActive(true)}
             onSubmit={(e) => handleTitleSubmit(e)}
             onCancel={() => setIsEditTitleActive(false)}
-            width={isEditTitleActive ? "50%" : undefined}
-          >
+            width={isEditTitleActive ? "50%" : undefined}>
             <EditablePreview />
             <EditableInput data-test={"editable-input"} />
           </Editable>
@@ -79,8 +86,7 @@ const Header = () => {
           <Button
             leftIcon={<TriangleDownIcon />}
             size={"sm"}
-            onClick={onOpenLoad}
-          >
+            onClick={onOpenLoad}>
             Cargar Problema{" "}
           </Button>
 
@@ -88,8 +94,7 @@ const Header = () => {
             leftIcon={<DownloadIcon />}
             size={"sm"}
             colorScheme={"blue"}
-            onClick={() => handleGenerateProblem()}
-          >
+            onClick={() => handleGenerateProblem()}>
             Generar Problema
           </Button>
 
@@ -97,8 +102,7 @@ const Header = () => {
             leftIcon={<AddIcon />}
             size={"sm"}
             colorScheme={"orange"}
-            onClick={onOpen}
-          >
+            onClick={onOpen}>
             Nuevo Problema
           </Button>
 
@@ -107,8 +111,7 @@ const Header = () => {
           <AlertDialog
             onClose={onClose}
             isOpen={isOpen}
-            isCentered
-          >
+            isCentered>
             <AlertDialogOverlay />
 
             <AlertDialogContent>
@@ -124,8 +127,7 @@ const Header = () => {
                 <Button
                   colorScheme="red"
                   ml={3}
-                  onClick={() => createNewProblem()}
-                >
+                  onClick={() => createNewProblem()}>
                   Sí
                 </Button>
               </AlertDialogFooter>

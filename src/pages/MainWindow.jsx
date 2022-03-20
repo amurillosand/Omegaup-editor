@@ -93,9 +93,9 @@ const MainWindow = () => {
               <GeneratorWindow />
             </TabPanel>
 
-            {/* <TabPanel>
+            <TabPanel>
               <CasesWindow />
-            </TabPanel> */}
+            </TabPanel>
           </TabPanels>
 
         </Tabs>
