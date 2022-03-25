@@ -21,7 +21,7 @@ import "../../libs/markdown/editorStyles/react-mde-all.css";
 import "../../libs/aceStyles/darkTheme.css";
 
 import { fileToString } from "../../libs/other/toString"
-import informationFile from "./information.txt";
+import generatorInformationFile from "./information.txt";
 
 import { useAppContext } from "../../App";
 import { useRef, useState } from "react";
@@ -33,18 +33,17 @@ const GeneratorWindow = () => {
   const editorHeight = 695;
   const [showCode, setShowCode] = useState(true);
   const [showExplanation, setShowExplanation] = useState(false);
-
   const showCodeRef = useRef(null);
-  const generatorInformation = useRef(null);
+  const [generatorInformation, setGeneratorInformation] = useState("");
   const showExplanationRef = useRef(null);
-
-  fileToString(informationFile, (data) => {
-    generatorInformation.current.innerHTML = parse(data);
-  });
 
   const style = useColorModeValue("light", "dark");
 
   React.useEffect(() => {
+    fileToString(generatorInformationFile).then((data) => {
+      setGeneratorInformation(parse(data));
+    });
+
     document.addEventListener("keyup", handleKeyPress);
     return () => document.removeEventListener("keypress", handleKeyPress);
   }, []);
@@ -62,11 +61,9 @@ const GeneratorWindow = () => {
 
   return (
     <>
-      <Flex>
+      <Flex w={"100%"}>
         {showCode && (
           <Box w={"100%"}>
-            {/* <Text> Código </Text> */}
-
             <CodeEditor
               code={generator.code}
               setCode={(newCode) => {
@@ -89,19 +86,19 @@ const GeneratorWindow = () => {
 
         {showExplanation && (
           <Box ml={5} w={showCode ? "50%" : "100%"}>
-            {/* <Text> Explicación de uso </Text> */}
-
             <Box
-              ref={generatorInformation}
-              className={style + " markdown"}
-            />
+              dangerouslySetInnerHTML={{ __html: generatorInformation }}
+              className={style + " markdown"}>
+            </Box>
           </Box>
         )}
       </Flex>
 
-      {!showExplanation && !showCode && (
-        <SadSloth />
-      )}
+      {
+        !showExplanation && !showCode && (
+          <SadSloth />
+        )
+      }
 
       <Box pos={"fixed"} zIndex={5} left={3} bottom={5}>
         <VStack>

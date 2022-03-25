@@ -26,11 +26,12 @@ testplan
   ...
  */
 
-export async function generateProblem(data, toast) {
+export async function generateProblem(data, toast, updateProblemStatus, closeProblemStatus) {
   const { generator, solution, writing, title, groups, setGroups } = data;
 
-  function toastBasicError(message, description = undefined, errorFunction) {
-    if (errorFunction()) {
+  function toastError(message, description = undefined, valid) {
+    if (valid()) {
+      console.log("Toast error: ", message);
       toast({
         title: message,
         description: description,
@@ -39,6 +40,7 @@ export async function generateProblem(data, toast) {
       });
       return true;
     }
+    console.log("All good", message);
     return false;
   }
 
@@ -60,11 +62,11 @@ export async function generateProblem(data, toast) {
     });
 
     return ({
-      error: toastBasicError(
+      error: toastError(
         "Puntaje incorrecto",
-        `La suma de los puntos da ${sum}, debe de dar 100.`,
+        `El puntaje no cuadra, la suma de los puntos da ${sum}, debería de dar 100 puntos.`,
         () => sum + 0.00001 < 100),
-      testPlan
+      testPlan: testPlan
     });
   };
 
@@ -108,7 +110,7 @@ export async function generateProblem(data, toast) {
     console.log("Error: ", error);
 
     return ({
-      error: toastBasicError(error?.title, error?.description, () => error),
+      error: toastError(error?.title, error?.description, () => error),
       input: result.submissions
     });
   }
@@ -128,19 +130,20 @@ export async function generateProblem(data, toast) {
     console.log("Error: ", error);
 
     return ({
-      error: toastBasicError(error?.title, error?.description, () => error),
+      error: toastError(error?.title, error?.description, () => error),
       output: result.submissions
     });
   }
 
-  // if (
-  //   toastBasicError("No hay título del problema", undefined, () => title.length === 0) ||
-  //   toastBasicError("No hay generador de casos", undefined, () => generator.code.length === 0) ||
-  //   toastBasicError("No hay solución", undefined, () => solution.code.length === 0) ||
-  //   toastBasicError("No descripción del problema", undefined, () => writing.length === 0)
-  // ) {
-  //   return;
-  // }
+  if (
+    toastError("Problema sin título", "No hay título para identificar el problema.", () => title.length === 0) ||
+    toastError("Problema sin generador de casos", "No hay forma de generar casos para el problema.", () => generator.code.length === 0) ||
+    toastError("Problema sin solución", "Debe de existir una solución modelo para poder generar las soluciones a los casos.", () => solution.code.length === 0) ||
+    toastError("Problema sin descripción", "No hay historia que describa qué hay que hacer en el problema.", () => writing.length === 0)
+  ) {
+    return;
+  }
+
 
   let zip = new JSZip();
 
@@ -148,7 +151,13 @@ export async function generateProblem(data, toast) {
   const solutions = zip.folder("solutions");
   const cases = zip.folder("cases");
 
-  let anyError = false;
+  updateProblemStatus({
+    title: `Revisando los puntajes de los casos`,
+    description: "La suma de los puntajes de todos los casos debe ser 100.",
+    status: "success",
+  });
+
+  let anyError = true;
   const { testPlanError, testPlan } = getTestPlan(groups);
 
   if (!testPlanError) {
@@ -159,13 +168,31 @@ export async function generateProblem(data, toast) {
     solutions.file(`solution.${solution.language}`, solution.code);
     solutions.file(`generator.${generator.language}`, generator.code);
 
+    updateProblemStatus({
+      title: `Generando los casos de prueba`,
+      description: "Se ejecutará tu generador de casos múltiples veces.",
+      status: "success",
+    });
+
     const { inputError, input } = await generateInput();
 
     if (!inputError) {
-      console.log(input);
+      updateProblemStatus({
+        title: `Generando respuestas`,
+        description: "Se ejecutará tu solución con los casos de prueba obtenidos anteriormente.",
+        status: "success",
+      });
+
       const { outputError, output } = await generateOutput(input);
 
       if (!outputError) {
+        updateProblemStatus({
+          title: `Generando zip`,
+          description: "Todo salió bien, se está generando el zip, por favor espere.",
+          status: "success",
+        });
+
+        anyError = false;
         let i = 0;
         const results = new Map();
         for (const group of groups) {
@@ -191,36 +218,36 @@ export async function generateProblem(data, toast) {
             output: results.get(testCase.caseId).output,
           }))
         })));
-      } else {
-        anyError = true;
       }
-    } else {
-      anyError = true;
     }
-  } else {
-    anyError = true;
   }
 
   // It doesn't matter if it fails, we generate the zip
   return zip.generateAsync({ type: "blob" }).then((content) => {
     saveAs(content, `${title}.zip`);
   }).then(() => {
-    if (!anyError) {
-      toast({
+    if (anyError) {
+      updateProblemStatus({
         title: "Problema generado exitosamente",
         description: `El problema \"${title}\" ya está listo para ser subido a omegaup; revise que todo esté como usted esperaba.`,
         status: "success",
-        isClosable: true,
       });
     } else {
-      toast({
+      updateProblemStatus({
         title: "Hay un problema interno, regrese luego :)",
-        description: `Probablemente el juez que corre el código está caido :(`,
+        description: `Probablemente el servidor está caido :(, suba el zip generado`,
         status: "warning",
         isClosable: true,
       });
     }
   });
+
+  setTimeout(() => {
+    closeProblemStatus({
+      title: "Hasta luego",
+      description: "",
+    });
+  }, 5000);
 };
 
 

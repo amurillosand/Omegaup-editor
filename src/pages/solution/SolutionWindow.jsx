@@ -62,8 +62,6 @@ const SolutionWindow = () => {
       <Flex>
         {showCode && (
           <Box w={"100%"}>
-            {/* <Text> Código </Text> */}
-
             <CodeEditor
               code={solution.code}
               setCode={(newCode) => {
@@ -86,8 +84,6 @@ const SolutionWindow = () => {
 
         {showSolution && (
           <Box ml={5} w={"100%"}>
-            {/* <Text> Redacción </Text> */}
-
             <Box className={style}>
               <ReactMde
                 ref={mdEditorRef}

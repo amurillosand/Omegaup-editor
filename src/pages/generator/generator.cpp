@@ -1,5 +1,3 @@
-#pragma once
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -14,9 +12,6 @@ struct Random {
     assert(n >= 0);
     vector<T> v(n);
     if (unique) {
-      for (auto& x : v)
-        x = g();
-    } else {
       set<T> st;
       for (auto& x : v) {
         do {
@@ -24,6 +19,9 @@ struct Random {
         } while (st.count(x));
         st.insert(x);
       }
+    } else {
+      for (auto& x : v)
+        x = g();
     }
     return v;
   }
@@ -71,8 +69,9 @@ struct Random {
     });
   }
 
-  // Returns a string of size n following 'pattern'. The 'pattern' needs a pair of elements, it could be multiple pairs, i.e. "acDF15" all strings
-  // will be of characters of the set {[a,c],[D,F],[1,5]}
+  // Returns a string of size n following 'pattern'.
+  // The 'pattern' needs a pair of elements, it could be multiple pairs, i.e. "acDF15" all strings will be of characters of the set
+  // {[a,c],[D,F],[1,5]}
   string getString(int n, string pattern = "az") {
     assert(pattern.size());
     assert(n >= 0);
@@ -96,14 +95,14 @@ struct Random {
 
   // Creates a graph with weights in range [low, high].
   template <class T>
-  vector<Edge<T>> getGraph(int numNodes, int numEdges, T low = 1, T high = 1, bool uniqueEdges = false) {
+  vector<Edge<T>> getGraph(int n, int m, T low = 1, T high = 1, bool uniqueEdges = false) {
     if (uniqueEdges) {
-      long long maxNumEdges = 1LL * numNodes * (numNodes - 1) / 2LL;
-      assert(numEdges <= maxNumEdges);
+      long long maxNumOfEdges = 1LL * n * (n - 1) / 2LL;
+      assert(m <= maxNumOfEdges);
     }
-    return fillArray<Edge<T>>(numEdges, uniqueEdges, [&]() {
+    return fillArray<Edge<T>>(m, uniqueEdges, [&]() {
       Edge<T> edge;
-      auto myPair = getArray<int>(2, 1, numNodes, true);
+      auto myPair = getArray<int>(2, 1, n, true);
       edge.from = myPair[0];
       edge.to = myPair[1];
       edge.weight = get<T>(low, high);
@@ -113,9 +112,9 @@ struct Random {
 
   // Creates a tree with weights in range [low, high].
   template <class T>
-  vector<Edge<T>> getTree(int numNodes, T low = 1, T high = 1) {
+  vector<Edge<T>> getTree(int n, T low = 1, T high = 1) {
     int current = 2;
-    return fillArray<Edge<T>>(numNodes - 1, true, [&]() {
+    return fillArray<Edge<T>>(n - 1, true, [&]() {
       Edge<T> edge;
       edge.from = get<int>(1, current - 1);
       edge.to = current++;
@@ -124,3 +123,29 @@ struct Random {
     });
   }
 };
+
+int main() {
+  cin.tie(0)->sync_with_stdio(0), cout.tie(0);
+
+  Random random;
+
+  string groupName, testCaseName;
+  cin >> groupName >> testCaseName;
+
+  int n;
+
+  if (groupName == "easy") {
+    n = random.get<int>(1, 10);
+  } else {
+    n = random.get<int>(1, 100);
+  }
+
+  cout << n << '\n';
+
+  auto a = random.getArray<int>(n, 1, 1000);
+  for (auto x : a)
+    cout << x << " ";
+  cout << '\n';
+
+  return 0;
+}

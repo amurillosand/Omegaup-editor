@@ -11,6 +11,8 @@ import useStateCallback from "./components/useStateCallback";
 import { v4 as uuid } from "uuid";
 import { fileToString } from "./libs/other/toString"
 import writingTemplate from "./pages/writing/template.txt"
+import solutionTemplate from "./pages/solution/solution.cpp"
+import generatorTemplate from "./pages/generator/generator.cpp"
 
 export const AppContext = React.createContext(null);
 
@@ -35,8 +37,23 @@ export const App = () => {
   const [groups, setGroups] = useStateCallback([]);
 
   useEffect(() => {
-    fileToString(writingTemplate, (data) => {
+    fileToString(solutionTemplate).then((data) => {
+      setSolution((prevState) => ({
+        ...prevState,
+        code: data,
+        language: "cpp",
+      }));
+    });
+
+    fileToString(writingTemplate).then((data) => {
       setWriting(data);
+    });
+
+    fileToString(generatorTemplate).then((data) => {
+      setGenerator({
+        code: data,
+        language: "cpp",
+      });
     });
 
     setGroups([{

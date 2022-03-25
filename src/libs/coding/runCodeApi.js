@@ -9,6 +9,60 @@ export function getLanguageId(language) {
   }).id;
 }
 
+export async function getConfigInfo() {
+  const config = await fetch("https://judge0-ce.p.rapidapi.com/config_info", {
+    method: "GET",
+    mode: "cors",
+    headers: {
+      "x-rapidapi-host": host,
+      "x-rapidapi-key": key,
+      "content-type": "application/json",
+    },
+  }).then((response) => response.json());
+
+  // console.log(config);
+
+  // allow_enable_network: false
+  // allow_enable_per_process_and_thread_memory_limit: true
+  // allow_enable_per_process_and_thread_time_limit: true
+  // allowed_languages_for_compile_options: []
+  // callbacks_max_tries: 3
+  // callbacks_timeout: 5
+  // cpu_extra_time: 1
+  // cpu_time_limit: 5
+  // enable_additional_files: true
+  // enable_batched_submissions: true
+  // enable_callbacks: true
+  // enable_command_line_arguments: true
+  // enable_compiler_options: true
+  // enable_network: false
+  // enable_per_process_and_thread_memory_limit: false
+  // enable_per_process_and_thread_time_limit: false
+  // enable_submission_delete: false
+  // enable_wait_result: true
+  // maintenance_mode: false
+  // max_cpu_extra_time: 5
+  // max_cpu_time_limit: 15
+  // max_extract_size: 10240
+  // max_file_size: 1024
+  // max_max_file_size: 20480
+  // max_max_processes_and_or_threads: 120
+  // max_memory_limit: 512000
+  // max_number_of_runs: 20
+  // max_processes_and_or_threads: 60
+  // max_queue_size: 10000
+  // max_stack_limit: 128000
+  // max_submission_batch_size: 20
+  // max_wall_time_limit: 20
+  // memory_limit: 128000
+  // number_of_runs: 1
+  // redirect_stderr_to_stdout: false
+  // stack_limit: 64000
+  // submission_cache_duration: 1
+  // use_docs_as_homepage: true
+  // wall_time_limit: 10
+}
+
 // export async function runSingle(code, language, input) {
 //   console.log("Code:", code);
 //   console.log("Language:", language);
@@ -160,6 +214,15 @@ async function runBatch(data) {
 }
 
 export async function runMultiple(data) {
+  // data is [{language_id, source_code, stdin}, ...]
+
+  data = data.map((element) => ({
+    ...element,
+    cpu_time_limit: 10,
+    cpu_extra_time: 2,
+    memory_limit: 300000
+  }));
+
   const batches = splitInBatches(data, 20);
 
   console.log("Batches: ", batches);

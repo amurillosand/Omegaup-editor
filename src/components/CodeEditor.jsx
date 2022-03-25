@@ -64,8 +64,7 @@ const CodeEditor = (props) => {
               {languages.map((language, index) => (
                 <option
                   key={language.ace + index}
-                  value={index}
-                  selected={index === languageIndex}>
+                  value={index}>
                   {language.name}
                 </option>
               ))}
@@ -91,7 +90,7 @@ const CodeEditor = (props) => {
           theme={codeStyle}
           fontSize={fontSize}
           name={"solutionEditor"}
-          defaultValue={code}
+          value={code}
           onChange={(newCode) => setCode(newCode)}
           width={"100%"}
           height={height + "px"}

@@ -21,6 +21,7 @@ import SelectACaseSloth from "../../components/SelectACaseSloth";
 import SidebarWindow from "./sidebar/SidebarWindow";
 import TopBar from "./TopBar";
 import TextArea from "./TextArea";
+import { useAppContext } from "../../App";
 
 const CaseContext = React.createContext(null);
 
@@ -29,6 +30,7 @@ export function useCaseContext() {
 }
 
 const CasesWindow = () => {
+  const { groups } = useAppContext();
   const [showOutput, setShowOutput] = useState(true);
   const [showInput, setShowInput] = useState(true);
 

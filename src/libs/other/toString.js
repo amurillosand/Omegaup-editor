@@ -1,6 +1,4 @@
-export function fileToString(file, callback) {
+export async function fileToString(file) {
   // A dirty trick, call fileToString and callback to do something with the stuff 
-  return fetch(file)
-    .then((response) => response.text())
-    .then((data) => callback(data));
+  return await fetch(file).then((response) => response.text())
 }

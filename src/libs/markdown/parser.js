@@ -106,7 +106,13 @@ export const toGFM = (input) => {
 export const parse = (input) => {
   const parser = new MarkdownIt({
     html: true,
-  }).use(markdownMath, { engine: katex, delimiters: "dollars" });
+    linkify: true,
+    typographer: true,
+  }).use(markdownMath, { 
+    engine: katex, 
+    delimiters: "dollars" 
+  });
+
   const GFMString = toGFM(input);
   return parser.render(GFMString);
 };

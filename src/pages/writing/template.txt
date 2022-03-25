@@ -1,39 +1,39 @@
 # Descripción
 
-Esta es la descripción del problema. Inventa una historia creativa.
+Inventa una historia creativa.
+
 Puedes utilizar matemáticas inline para hacer $x_i, y_i$, o $z_i$ o incluso:
+
 $x=\frac{b\pm \sqrt{b^2 -4ac}}{2a}$
 
 # Entrada
 
-Aquí va la descripción de la entrada del problema.
+Un entero $n$ el tamaño del arreglo $a$.
 
-Dos enteros $a$ y $b$.
+$n$ enteros $a_i$ separados por espacios. 
 
 # Salida
 
-Esta es la descripción de la salida esperada.
-
-La suma de $a$ con $b$.
+La suma de todos los $a_i$
 
 # Ejemplo
 
 ||input
+2
 1 2
 ||output
 3
 ||description
 Suma de 1 + 2
 ||input
-5 10
+5
+5 10 15 20 25
 ||output
-15
+75
 ||description
-Suma de 5 + 10
 ||end
 
 # Límites
-
-- Aquí van los límites
-- $1 \leq a, b \leq 1000$
+- $1\leq n \leq 100$
+- $1 \leq a_i \leq 1000$
 

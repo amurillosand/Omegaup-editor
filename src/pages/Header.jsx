@@ -49,15 +49,30 @@ const Header = () => {
     window.location.reload();
   }
 
+  const toastId = React.useRef(null);
+
+
   function handleGenerateProblem() {
-    toast({
-      title: `Generando problema \"${title}\"`,
-      description: "Se está generando el problema...\n Tenga paciencia",
+    toastId.current = toast({
+      title: `Generando problema`,
+      description: "Revisando que todo esté completo...",
       status: "success",
-      isClosable: true,
+      isClosable: false,
     });
 
-    generateProblem(data, toast);
+    function updateProblemStatus(newContent) {
+      toast.update(toastId.current, newContent);
+    };
+
+    function closeProblemStatus(newContent) {
+      toast.update(toastId.current, {
+        ...newContent,
+        isClosable: true,
+        duration: 10000,
+      });
+    }
+
+    generateProblem(data, toast, updateProblemStatus, closeProblemStatus);
   }
 
   return (
