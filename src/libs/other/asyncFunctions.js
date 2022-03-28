@@ -10,3 +10,11 @@ export const asyncForEach = async (array, callback) => {
     await callback(array[index], index, array);
   }
 };
+
+export const asyncTimeout = (callback, timeout = 0) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(callback());
+    }, timeout);
+  });
+}

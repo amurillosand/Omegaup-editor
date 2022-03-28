@@ -51,28 +51,26 @@ const Header = () => {
 
   const toastId = React.useRef(null);
 
+  function handleGenerateProblem(e) {
+    e.preventDefault();
 
-  function handleGenerateProblem() {
+    toast.closeAll();
+
     toastId.current = toast({
       title: `Generando problema`,
       description: "Revisando que todo esté completo...",
       status: "success",
-      isClosable: false,
+      duration: null,
     });
 
     function updateProblemStatus(newContent) {
-      toast.update(toastId.current, newContent);
-    };
-
-    function closeProblemStatus(newContent) {
       toast.update(toastId.current, {
         ...newContent,
-        isClosable: true,
-        duration: 10000,
+        duration: null,
       });
-    }
+    };
 
-    generateProblem(data, toast, updateProblemStatus, closeProblemStatus);
+    generateProblem(data, toast, updateProblemStatus);
   }
 
   return (
@@ -109,7 +107,7 @@ const Header = () => {
             leftIcon={<DownloadIcon />}
             size={"sm"}
             colorScheme={"blue"}
-            onClick={() => handleGenerateProblem()}>
+            onClick={(e) => handleGenerateProblem(e)}>
             Generar Problema
           </Button>
 

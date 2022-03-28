@@ -9,6 +9,19 @@ export function getLanguageId(language) {
   }).id;
 }
 
+export function encode(str) {
+  return btoa(unescape(encodeURIComponent(str || "")));
+}
+
+export function decode(bytes) {
+  var escaped = escape(atob(bytes || ""));
+  try {
+    return decodeURIComponent(escaped);
+  } catch {
+    return unescape(escaped);
+  }
+}
+
 export async function getConfigInfo() {
   const config = await fetch("https://judge0-ce.p.rapidapi.com/config_info", {
     method: "GET",
@@ -152,7 +165,7 @@ function splitInBatches(array, batchSize) {
 
 async function runBatch(data) {
   return await fetch(
-    "https://judge0-ce.p.rapidapi.com/submissions/batch",
+    "https://judge0-ce.p.rapidapi.com/submissions/batch?base64_encoded=true",
     {
       method: "POST",
       headers: {
@@ -176,7 +189,7 @@ async function runBatch(data) {
       tokensStr += tokens[i].token;
     }
 
-    const url = `https://judge0-ce.p.rapidapi.com/submissions/batch?tokens=${tokensStr}`;
+    const queryUrl = `https://judge0-ce.p.rapidapi.com/submissions/batch?tokens=${tokensStr}&base64_encoded=true`;
 
     let state = {
       status: 0,
@@ -184,7 +197,7 @@ async function runBatch(data) {
     }
 
     do {
-      const getState = await fetch(url, {
+      const getState = await fetch(queryUrl, {
         method: "GET",
         mode: "cors",
         headers: {
@@ -194,8 +207,8 @@ async function runBatch(data) {
         },
       });
 
+      // Wait 10 seconds for the answer
       setTimeout(async () => {
-        // Wait 10 seconds for the answer
         state = await getState.json();
         state.status = 1e9;
         for (let submission of state.submissions) {
@@ -203,21 +216,43 @@ async function runBatch(data) {
           if (state.status <= 2)
             break;
         }
-      }, 15000);
+      }, 10000);
 
     } while (state.status <= 2);
-
-    console.log("State: ", state);
 
     return state;
   });
 }
 
+export async function runFakeMultiple(data) {
+  return {
+    submissions: data.map((data) => ({
+      status: {
+        id: 3,
+        description: "All good"
+      },
+      stdout: "fake call"
+    })),
+    status: 3,
+  };
+}
+
 export async function runMultiple(data) {
-  // data is [{language_id, source_code, stdin}, ...]
+  return await runFakeMultiple(data);
+
+  // data has [{language_id, source_code, stdin}, ...]
+
+  function getCompilerOptions(languageId) {
+    if (languageId === getLanguageId("cpp")) {
+      // Only if it's C++, enable C++17 :D
+      return "-std=c++17";
+    }
+    return null;
+  }
 
   data = data.map((element) => ({
     ...element,
+    compiler_options: getCompilerOptions(element.language_id),
     cpu_time_limit: 10,
     cpu_extra_time: 2,
     memory_limit: 300000
@@ -238,13 +273,21 @@ export async function runMultiple(data) {
       }
     })
   }));
-  console.log("Results: ", results);
+
 
   // Merge all batches into one
-  const result = results[0];
+  const allResults = results[0];
   for (let i = 1; i < results.length; i++) {
-    result.submissions.push(...results[i].submissions);
+    allResults.submissions.push(...results[i].submissions);
   }
 
-  return result;
+  allResults.submissions = allResults.submissions.map((result) => ({
+    ...result,
+    compile_output: decode(result.compile_output),
+    message: decode(result.message),
+    stderr: decode(result.stderr),
+    stdout: decode(result.stdout),
+  }));
+
+  return allResults;
 }
