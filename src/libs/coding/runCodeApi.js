@@ -229,9 +229,9 @@ export async function runFakeMultiple(data) {
     submissions: data.map((data) => ({
       status: {
         id: 3,
-        description: "All good"
+        description: "Fake description"
       },
-      stdout: "fake call"
+      stdout: "Fake call"
     })),
     status: 3,
   };

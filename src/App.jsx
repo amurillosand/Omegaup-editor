@@ -33,7 +33,7 @@ export const App = () => {
   });
 
   const [writing, setWriting] = useState("");
-  const [title, setTitle] = useState("aaa");
+  const [title, setTitle] = useState("Problem");
   const [groups, setGroups] = useStateCallback([]);
 
   useEffect(() => {

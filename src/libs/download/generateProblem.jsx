@@ -27,25 +27,36 @@ testplan
   ...
  */
 
-export async function generateProblem(data, toast, updateProblemStatus) {
-  const { generator, solution, writing, title, groups, setGroups } = data;
+const waitingTime = {
+  testPlan: 3000,
+  input: 5000,
+  output: 5000,
+  generateZip: 5000,
+  closeToast: 8000,
+};
 
-  function showError(title, description = undefined, valid) {
-    if (valid()) {
-      console.log("Toast error: ", description);
-      toast({
-        title: title,
-        description: description,
-        status: "error",
-        isClosable: true,
-        duration: null,
-      });
-      return true;
-    }
-    return false;
+function checkErrors(results) {
+  // Check for errors D:, one error at a time
+  if (results.error) {
+    return ({
+      title: "Error interno vuelva más tarde :(",
+      description: results.error,
+    });
   }
 
-  function getTestPlan() {
+  for (const result of results.submissions)
+    if (result.status.id !== 3) {
+      return ({
+        title: result.status.description,
+        description: result.stderr ? result.stderr : result.compile_output,
+      });
+    }
+
+  return undefined;
+}
+
+async function getTestPlan(groups, showError) {
+  return await asyncTimeout(() => {
     let testPlan = "";
     let sum = 0;
     groups.forEach((group) => {
@@ -62,36 +73,20 @@ export async function generateProblem(data, toast, updateProblemStatus) {
       }
     });
 
+    console.log("Test plan result: ");
+
     return ({
       error: showError(
         "Puntaje incorrecto",
         `El puntaje no cuadra, la suma de los puntos da ${sum}, debería de dar 100.`,
         () => sum + 0.00001 < 100),
-      testPlan: testPlan
-    });
-  };
+      data: testPlan
+    })
+  }, waitingTime.testPlan);
+};
 
-  function checkErrors(results) {
-    // Check for errors D:, one error at a time
-    if (results.error) {
-      return ({
-        title: "Error interno vuelva más tarde :(",
-        description: results.error,
-      });
-    }
-
-    for (const result of results.submissions)
-      if (result.status.id !== 3) {
-        return ({
-          title: result.status.description,
-          description: result.stderr ? result.stderr : result.compile_output,
-        });
-      }
-
-    return undefined;
-  }
-
-  async function generateInput() {
+async function generateInput(generator, groups, showError, checkErrors) {
+  return await asyncTimeout(async () => {
     const all = [];
     const languageId = getLanguageId(generator.language);
     const encodedGeneratorCode = encode(generator.code);
@@ -114,11 +109,13 @@ export async function generateProblem(data, toast, updateProblemStatus) {
 
     return ({
       error: showError(error?.title, error?.description, () => error),
-      input: result.submissions
-    });
-  }
+      data: result.submissions
+    })
+  }, waitingTime.input);
+}
 
-  async function generateOutput(input) {
+async function generateOutput(solution, input, showError, checkErrors) {
+  return await asyncTimeout(async () => {
     const languageId = getLanguageId(solution.language);
     const encodedSolutionCode = encode(solution.code);
     const all = input.map((input) => ({
@@ -135,29 +132,46 @@ export async function generateProblem(data, toast, updateProblemStatus) {
 
     return ({
       error: showError(error?.title, error?.description, () => error),
-      output: result.submissions
-    });
+      data: result.submissions
+    })
+  }, waitingTime.output);
+}
+
+export async function generateProblem(data, toast, updateProblemStatus) {
+  const { generator, solution, writing, title, groups, setGroups } = data;
+
+  function showError(title, description = undefined, valid) {
+    if (valid()) {
+      console.log("Toast error: ", description);
+      updateProblemStatus({
+        title: title,
+        description: description,
+        status: "error",
+        isClosable: true,
+      });
+      return true;
+    }
+    return false;
   }
 
-  function basicError() {
-    return (
-      showError(
-        "Problema sin título",
-        "No hay título para identificar el problema.",
-        () => title.length === 0) ||
-      showError(
-        "Problema sin generador de casos",
-        "No hay forma de generar casos para el problema.",
-        () => generator.code.length === 0) ||
-      showError(
-        "Problema sin solución",
-        "Debe de existir una solución modelo para poder generar las soluciones a los casos.",
-        () => solution.code.length === 0) ||
-      showError(
-        "Problema sin descripción",
-        "No hay historia que describa qué hay que hacer en el problema.",
-        () => writing.length === 0)
-    );
+  // Check basic errors
+  if (showError(
+    "Problema sin título",
+    "No hay título para identificar el problema.",
+    () => title.length === 0) ||
+    showError(
+      "Problema sin generador de casos",
+      "No hay forma de generar casos para el problema.",
+      () => generator.code.length === 0) ||
+    showError(
+      "Problema sin solución",
+      "Debe de existir una solución modelo para poder generar las soluciones a los casos.",
+      () => solution.code.length === 0) ||
+    showError(
+      "Problema sin descripción",
+      "No hay historia que describa qué hay que hacer en el problema.",
+      () => writing.length === 0)) {
+    return;
   }
 
   let zip = new JSZip();
@@ -166,111 +180,101 @@ export async function generateProblem(data, toast, updateProblemStatus) {
   const solutions = zip.folder("solutions");
   const cases = zip.folder("cases");
 
-  if (!basicError()) {
-    statements.file("es.markdown", writing);
-    solutions.file("es.markdown", solution.text + `\n\n{{solution.${solution.language}}}`);
-    solutions.file(`solution.${solution.language}`, solution.code);
-    solutions.file(`generator.${generator.language}`, generator.code);
+  statements.file("es.markdown", writing);
+  solutions.file("es.markdown", solution.text + `\n\n{{solution.${solution.language}}}`);
+  solutions.file(`solution.${solution.language}`, solution.code);
+  solutions.file(`generator.${generator.language}`, generator.code);
 
-    const anyError = await asyncTimeout(async () => {
-      updateProblemStatus({
-        title: `Revisando puntaje`,
-        description: "La suma de los puntajes de todos los casos de prueba debe dar 100.",
-        status: "success",
-      });
+  await asyncTimeout(async () => {
+    updateProblemStatus({
+      title: `Revisando puntaje`,
+      description: "La suma de los puntajes de todos los casos de prueba debe dar 100.",
+      status: "success",
+    });
 
-      const { testPlanError, testPlan } = getTestPlan(groups);
-      console.log(testPlanError);
+    const testPlan = await getTestPlan(groups, showError);
+    console.log(testPlan);
 
-      if (!testPlanError) {
-        zip.file("testplan", testPlan);
+    if (!testPlan.error) {
+      zip.file("testplan", testPlan.data);
 
-        return await asyncTimeout(async () => {
-          updateProblemStatus({
-            title: `Generando casos de prueba`,
-            description: "El generador se está ejecutando para generar los casos de prueba",
-            status: "success",
-          });
+      return await asyncTimeout(async () => {
+        updateProblemStatus({
+          title: `Generando casos de prueba`,
+          description: "El generador se está ejecutando para generar los casos de prueba",
+          status: "success",
+        });
 
-          const { inputError, input } = await generateInput();
-          console.log(inputError);
+        const input = await generateInput(generator, groups, showError, checkErrors);
+        console.log(input);
 
-          if (!inputError) {
-            return await asyncTimeout(async () => {
-              updateProblemStatus({
-                title: `Generando respuestas`,
-                description: "Se está ejecutando tu solución con los casos de prueba obtenidos anteriormente.",
-                status: "success",
-              });
-
-              const { outputError, output } = await generateOutput(input);
-              console.log(outputError);
-
-              if (!outputError) {
-                let i = 0;
-                const results = new Map();
-                for (const group of groups) {
-                  for (const testCase of group.cases) {
-                    cases.file(`${group.name}.${testCase.name}.in`, input[i].stdout);
-                    cases.file(`${group.name}.${testCase.name}.out`, output[i].stdout);
-
-                    results.set(testCase.caseId, {
-                      input: input[i].stdout,
-                      output: output[i].stdout,
-                    });
-
-                    i++;
-                  }
-                }
-
-                // Update groups with generated input/output
-                setGroups((prevGroups) => prevGroups.map((group) => ({
-                  ...group,
-                  cases: group.cases.map((testCase) => ({
-                    ...testCase,
-                    input: results.get(testCase.caseId).input,
-                    output: results.get(testCase.caseId).output,
-                  }))
-                })));
-              }
-
-              return outputError;
-            }, 5000);
-          }
-
-          return inputError;
-        }, 5000);
-      }
-
-      return testPlanError;
-    }, 3000);
-
-
-    if (!anyError) {
-      await asyncTimeout(async () => {
-        // It doesn't matter if it fails, we generate the zip
-        zip.generateAsync({
-          type: "blob"
-        }).then((content) => {
-          saveAs(content, `${title}.zip`);
-        }).then(() => {
-          console.log("Any error", anyError);
-          if (anyError) {
+        if (!input.error) {
+          return await asyncTimeout(async () => {
             updateProblemStatus({
-              title: "Problema interno, regrese luego :)",
-              description: `Probablemente el servidor está caido :(, suba el zip generado nuevamente al regresar.`,
-              status: "warning",
-              isClosable: true,
-            });
-          } else {
-            updateProblemStatus({
-              title: "Problema generado exitosamente",
-              description: `El problema \"${title}\" ya está listo para ser subido a omegaup; revise que todo esté como usted esperaba.`,
+              title: `Generando respuestas`,
+              description: "Se está ejecutando tu solución con los casos de prueba obtenidos anteriormente.",
               status: "success",
             });
-          }
-        });
-      }, 5000);
+
+            const output = await generateOutput(solution, input.data, showError, checkErrors);
+            console.log(output);
+
+            if (!output.error) {
+              let i = 0;
+              const results = new Map();
+              for (const group of groups) {
+                for (const testCase of group.cases) {
+                  cases.file(`${group.name}.${testCase.name}.in`, input.data[i].stdout);
+                  cases.file(`${group.name}.${testCase.name}.out`, output.data[i].stdout);
+
+                  results.set(testCase.caseId, {
+                    input: input.data[i].stdout,
+                    output: output.data[i].stdout,
+                  });
+
+                  i++;
+                }
+              }
+
+              // Update groups with generated input/output
+              setGroups((prevGroups) => prevGroups.map((group) => ({
+                ...group,
+                cases: group.cases.map((testCase) => ({
+                  ...testCase,
+                  input: results.get(testCase.caseId).input,
+                  output: results.get(testCase.caseId).output,
+                }))
+              })));
+            } else {
+              return output.error;
+            }
+          }, waitingTime.output);
+        } else {
+          return input.error;
+        }
+      }, waitingTime.input);
+    } else {
+      return testPlan.error;
     }
-  }
+  }, waitingTime.testPlan).then(async (anyError) => {
+    console.log("any error:", anyError);
+    await asyncTimeout(async () => {
+      // It doesn't matter if it fails, we generate the zip
+      zip.generateAsync({
+        type: "blob"
+      }).then((content) => {
+        saveAs(content, `${title}.zip`);
+      }).then(() => {
+        if (!anyError) {
+          updateProblemStatus({
+            title: "Problema generado exitosamente",
+            description: `El problema \"${title}\" ya está listo para ser subido a omegaup; revise que todo esté como usted esperaba.`,
+            status: "success",
+            isClosable: true,
+            duration: waitingTime.closeToast,
+          });
+        }
+      });
+    }, waitingTime.generateZip);
+  });
 };

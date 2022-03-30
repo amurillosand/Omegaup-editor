@@ -9,12 +9,7 @@ import {
   HStack,
   Spacer,
   useDisclosure,
-  AlertDialogOverlay,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogBody,
-  AlertDialog,
+
   useToast,
 } from "@chakra-ui/react";
 import { AiFillEdit } from "react-icons/ai";
@@ -22,6 +17,8 @@ import { AddIcon, DownloadIcon, TriangleDownIcon } from "@chakra-ui/icons";
 
 import { generateProblem } from "../libs/download/generateProblem";
 import { useAppContext } from "../App";
+import LoadProblem from "../libs/modals/load/LoadProblem";
+import CreateNewProblem from "../libs/modals/create/CreateNewProblem";
 
 const Header = () => {
   const { title, setTitle } = useAppContext();
@@ -30,13 +27,8 @@ const Header = () => {
 
   const [isEditTitleActive, setIsEditTitleActive] = React.useState(false);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const {
-    isOpen: isOpenLoad,
-    onOpen: onOpenLoad,
-    onClose: onCloseLoad,
-  } = useDisclosure();
+  const createNewProblem = useDisclosure();
+  const uploadProblem = useDisclosure();
 
   const cancelRef = React.useRef(null);
 
@@ -45,7 +37,7 @@ const Header = () => {
     setTitle(newTitle);
   }
 
-  function createNewProblem() {
+  function handleCreateNewProblem() {
     window.location.reload();
   }
 
@@ -65,12 +57,18 @@ const Header = () => {
 
     function updateProblemStatus(newContent) {
       toast.update(toastId.current, {
-        ...newContent,
         duration: null,
+        ...newContent,
       });
     };
 
     generateProblem(data, toast, updateProblemStatus);
+  }
+
+  function handleUploadProblem(e) {
+    e.preventDefault();
+
+    console.log(e);
   }
 
   return (
@@ -99,8 +97,8 @@ const Header = () => {
           <Button
             leftIcon={<TriangleDownIcon />}
             size={"sm"}
-            onClick={onOpenLoad}>
-            Cargar Problema{" "}
+            onClick={uploadProblem.onOpen}>
+            Cargar problema
           </Button>
 
           <Button
@@ -108,44 +106,27 @@ const Header = () => {
             size={"sm"}
             colorScheme={"blue"}
             onClick={(e) => handleGenerateProblem(e)}>
-            Generar Problema
+            Generar problema
           </Button>
 
           <Button
             leftIcon={<AddIcon />}
             size={"sm"}
             colorScheme={"orange"}
-            onClick={onOpen}>
-            Nuevo Problema
+            onClick={createNewProblem.onOpen}>
+            Nuevo problema
           </Button>
 
-          {/* <LoadProblem isOpen={isOpenLoad} onClose={onCloseLoad} /> */}
+          <LoadProblem
+            isOpen={uploadProblem.isOpen}
+            onClose={uploadProblem.onClose}
+            handleUploadProblem={handleUploadProblem} />
 
-          <AlertDialog
-            onClose={onClose}
-            isOpen={isOpen}
-            isCentered>
-            <AlertDialogOverlay />
-
-            <AlertDialogContent>
-              <AlertDialogHeader>Crear nuevo problema</AlertDialogHeader>
-              <AlertDialogBody>
-                ¿Deseas crear un nuevo problema? Se borrará TODO el problema
-                anterior. Guarda el problema primero antes de crear uno nuevo.
-              </AlertDialogBody>
-              <AlertDialogFooter>
-                <Button ref={cancelRef} onClick={onClose}>
-                  No
-                </Button>
-                <Button
-                  colorScheme="red"
-                  ml={3}
-                  onClick={() => createNewProblem()}>
-                  Sí
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <CreateNewProblem
+            cancelRef={cancelRef}
+            isOpen={createNewProblem.isOpen}
+            onClose={createNewProblem.onClose}
+            handleCreateNewProblem={handleCreateNewProblem} />
         </HStack>
       </Box>
     </Container>
