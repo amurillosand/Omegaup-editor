@@ -91,8 +91,13 @@ async function generateInput(generator, groups, showError, checkErrors) {
     const languageId = getLanguageId(generator.language);
     const encodedGeneratorCode = encode(generator.code);
 
+    // Check if group has input/output
     for (const group of groups) {
       for (const testCase of group.cases) {
+        if (testCase.input.length > 0 && testCase.output.length > 0) {
+          continue;
+        }
+
         all.push({
           language_id: languageId,
           source_code: encodedGeneratorCode,
@@ -224,6 +229,10 @@ export async function generateProblem(data, toast, updateProblemStatus) {
               const results = new Map();
               for (const group of groups) {
                 for (const testCase of group.cases) {
+                  if (testCase.input.length > 0 && testCase.output.length > 0) {
+                    continue;
+                  }
+
                   cases.file(`${group.name}.${testCase.name}.in`, input.data[i].stdout);
                   cases.file(`${group.name}.${testCase.name}.out`, output.data[i].stdout);
 

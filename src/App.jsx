@@ -166,25 +166,66 @@ export const App = () => {
     });
   }
 
-  function editCase(caseModified, callback = undefined) {
-    eraseCase({
-      ...caseModified.info,
-      groupId: caseModified.lastGroupId
-    }, () => {
-      addCase(caseModified, callback);
-    });
+  function editCase(caseModified) {
+    setGroups((prevGroups) =>
+      prevGroups.map((group) => {
+        if (caseModified.groupId === group.groupId) {
+          return ({
+            ...group,
+            cases: group.cases.map((testCase) => {
+              if (testCase.caseId === caseModified.caseId) {
+                return ({
+                  ...testCase,
+                  ...caseModified
+                });
+              }
+              return testCase;
+            })
+          });
+        }
+        return group;
+      }));
+  }
+
+  function sortGroups() {
+
   }
 
   function editGroup(groupModified) {
     // console.log(groupModified);
 
-    setGroups(prevGroups => {
-      return prevGroups.map(group => {
+    setGroups((prevGroups) => {
+      return prevGroups.map((group) => {
         if (group.groupId === groupModified.groupId) {
-          return groupModified;
+          return ({
+            ...group,
+            ...groupModified
+          });
         }
         return group;
       });
+    });
+  }
+
+  function createCase(name, groupId, points = 0, defined = false, input = "", output = "") {
+    return ({
+      caseId: uuid(),
+      name: name,
+      groupId: groupId,
+      points: points,
+      defined: defined,
+      input: input,
+      output: output,
+    });
+  }
+
+  function createGroup(name, groupId = uuid(), points = 0, defined = false, cases = []) {
+    return ({
+      groupId: groupId,
+      name: name,
+      points: points,
+      defined: defined,
+      cases: cases,
     });
   }
 
@@ -197,10 +238,12 @@ export const App = () => {
           writing, setWriting,
           title, setTitle,
           groups, setGroups,
+          createCase, createGroup,
           addCase, addGroup,
           eraseCase, eraseGroup, eraseAllGroupCases,
           editCase, editGroup,
-          calculatePoints, maxPointsAvailable
+          calculatePoints, maxPointsAvailable,
+          sortGroups
         }}>
         <>
           <Navbar />

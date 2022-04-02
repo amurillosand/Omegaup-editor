@@ -17,7 +17,7 @@ import { AddIcon, DownloadIcon, TriangleDownIcon } from "@chakra-ui/icons";
 
 import { generateProblem } from "../libs/download/generateProblem";
 import { useAppContext } from "../App";
-import LoadProblem from "../libs/modals/load/LoadProblem";
+import UploadProblem from "../libs/modals/upload/UploadProblem";
 import CreateNewProblem from "../libs/modals/create/CreateNewProblem";
 
 const Header = () => {
@@ -117,7 +117,7 @@ const Header = () => {
             Nuevo problema
           </Button>
 
-          <LoadProblem
+          <UploadProblem
             isOpen={uploadProblem.isOpen}
             onClose={uploadProblem.onClose}
             handleUploadProblem={handleUploadProblem} />
