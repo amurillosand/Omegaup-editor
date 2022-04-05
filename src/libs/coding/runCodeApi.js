@@ -238,7 +238,8 @@ export async function runFakeMultiple(data) {
 }
 
 export async function runMultiple(data) {
-  return await runFakeMultiple(data);
+  // Fake server
+  // return await runFakeMultiple(data);
 
   // data has [{language_id, source_code, stdin}, ...]
 

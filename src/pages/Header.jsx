@@ -19,9 +19,10 @@ import { generateProblem } from "../libs/download/generateProblem";
 import { useAppContext } from "../App";
 import UploadProblem from "../libs/modals/upload/UploadProblem";
 import CreateNewProblem from "../libs/modals/create/CreateNewProblem";
+import { asyncTimeout } from "../libs/other/asyncFunctions";
 
 const Header = () => {
-  const { title, setTitle } = useAppContext();
+  const { title, setTitle, sortGroups } = useAppContext();
   const data = useAppContext();
   const toast = useToast();
 
@@ -65,10 +66,11 @@ const Header = () => {
     generateProblem(data, toast, updateProblemStatus);
   }
 
-  function handleUploadProblem(e) {
-    e.preventDefault();
-
-    console.log(e);
+  async function handleUploadProblem() {
+    await asyncTimeout(() => {
+      sortGroups();
+      uploadProblem.onClose();
+    }, 1000);
   }
 
   return (

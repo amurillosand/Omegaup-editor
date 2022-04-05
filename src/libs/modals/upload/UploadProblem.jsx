@@ -24,6 +24,7 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import { useDropzone } from "react-dropzone";
 import { useState } from "react";
 import { useAppContext } from "../../../App";
+import { asyncTimeout } from "../../other/asyncFunctions";
 
 import JSZip from "jszip";
 
@@ -57,41 +58,27 @@ function splitFilename(filename) {
 
 function splitTestCase(name) {
   let lastPeriod = name.lastIndexOf('.');
-  const groupName = name.substring(0, lastPeriod);
-  const caseName = name.substring(lastPeriod + 1, name.length);
+  let groupName = name.substring(0, lastPeriod);
+  let caseName = name.substring(lastPeriod + 1, name.length);
+
+  if (groupName.length === 0) {
+    groupName = "sin_grupo";
+  }
+
   return ({
     groupName,
     caseName
   });
 }
 
-function extractTestPlan(testPlan) {
-  testPlan = testPlan.split("\n");
-  const groupPoints = new Map();
-  for (let line of testPlan) {
-    line = line.split(" ");
-    let testCase = line[0];
-    let points = line[1];
-
-    const { groupName, caseName } = splitTestCase(testCase);
-    if (points > 0) {
-      groupPoints.set(groupName, points);
-    }
-  }
-
-  console.log(groupPoints);
-
-  return [];
-}
-
 const UploadProblem = (props) => {
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, handleUploadProblem } = props;
   const {
     setGenerator, setSolution, setWriting,
     createCase, createGroup,
     addGroup, addCase,
     editCase, editGroup,
-    sortGroups
+    groups
   } = useAppContext();
 
   const [isUploading, setIsUploading] = useState(false);
@@ -109,23 +96,24 @@ const UploadProblem = (props) => {
     forceRender({});
   }
 
-  async function handleUploadFile() {
-    setIsUploading(true);
+  async function handleUploadFile(e) {
+    e.preventDefault();
 
     await JSZip.loadAsync(acceptedFiles[0]).then((zip) => {
-      const groups = new Map();
-      const groupIdToName = new Map();
-      const cases = new Map();
+      let caseNameToData = new Map();
+      let groupNameToData = new Map();
 
       Object.keys(zip.files).forEach((filename) => {
         zip.files[filename].async('string').then((fileData) => {
           filename = filename.trim();
+
           if (filename.startsWith(".") || filename.startsWith("_")) {
             // Trash files
             return;
           }
 
           const { name, extension, lastFolder } = splitFilename(filename);
+
           if (extension === null && name !== "testplan") {
             return;
           }
@@ -157,46 +145,71 @@ const UploadProblem = (props) => {
             // a.in
             // a.1.in
             const { groupName, caseName } = splitTestCase(name);
-            if (groupName.length === 0) {
-              return;
-            }
 
-            if (!groups.has(groupName)) {
-              const groupData = createGroup(groupName);
-              groups.set(groupName, groupData);
-              groupIdToName.set(groupData.groupId, groupName);
-              addGroup(groupData);
-            }
+            let groupData = groupNameToData.get(groupName);
 
-            if (!cases.has(name)) {
-              const caseData = createCase(caseName, groups.get(groupName).groupId);
-              cases.set(name, caseData);
+            let caseData = null;
+            if (!caseNameToData.has(name)) {
+              caseData = createCase({ name: caseName, groupId: groupData.groupId });
+              caseNameToData.set(name, caseData);
               addCase(caseData);
+            } else {
+              caseData = caseNameToData.get(name);
             }
 
-            const caseData = cases.get(name);
             if (extension === "in") {
-              editCase({
-                groupId: caseData.groupId,
-                caseId: caseData.caseId,
-                input: fileData
-              });
+              caseData.input = fileData;
             } else if (extension === "out") {
-              editCase({
-                groupId: caseData.groupId,
-                caseId: caseData.caseId,
-                output: fileData
-              });
+              caseData.output = fileData;
             }
+
+
+            caseNameToData.set(name, caseData);
+            editCase(caseData);
+
           } else if (name.startsWith("testplan")) {
-            console.log(fileData);
-            const testPlan = extractTestPlan(fileData);
+            let testPlan = fileData.split("\n");
+            let groupNameToPoints = new Map();
+            for (let line of testPlan) {
+              line = line.split(" ");
+              if (line.length === 2) {
+                let testCase = line[0];
+                let points = parseInt(line[1]);
+
+                const { groupName, caseName } = splitTestCase(testCase);
+
+                if (groupNameToPoints.has(groupName))
+                  points += parseInt(groupNameToPoints.get(groupName));
+
+                groupNameToPoints.set(groupName, points);
+              }
+            }
+
+
+            groupNameToPoints.forEach((points, groupName) => {
+              if (groupName === "sin_grupo") {
+                let groupData = groups[0];
+                groupNameToData.set(groupName, groupData);
+                editGroup({
+                  groupdId: groupData.groupId,
+                  points: points,
+                  defined: true,
+                });
+              } else {
+                let groupData = createGroup({ name: groupName, points: points });
+                groupNameToData.set(groupName, groupData);
+                addGroup(groupData);
+              }
+            });
           }
         })
       })
+
+      console.log("Done");
     }).then(() => {
+      console.log("Close");
       setIsUploading(false);
-      sortGroups();
+      handleUploadProblem();
     });
   }
 
@@ -250,7 +263,7 @@ const UploadProblem = (props) => {
             isLoading={isUploading}
             isDisabled={isUploading}
             colorScheme="green"
-            onClick={() => handleUploadFile()}
+            onClick={(e) => handleUploadFile(e)}
             type={"submit"}>
             Cargar
           </Button>

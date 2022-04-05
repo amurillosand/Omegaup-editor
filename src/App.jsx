@@ -6,7 +6,8 @@ import MainWindow from "./pages/MainWindow";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
-import useStateCallback from "./components/useStateCallback";
+import useStateCallback from "./libs/other/useStateCallback";
+import usePrevious from "./libs/other/usePrevious";
 
 import { v4 as uuid } from "uuid";
 import { fileToString } from "./libs/other/toString"
@@ -59,7 +60,7 @@ export const App = () => {
     setGroups([{
       groupId: uuid(),
       name: "sin_grupo",
-      points: 100,
+      points: 0,
       defined: false,
       cases: [],
     }]);
@@ -188,7 +189,34 @@ export const App = () => {
   }
 
   function sortGroups() {
+    console.log("Sort");
 
+    const numbersFirst = (a, b) => {
+      let numA = Number(a);
+      let numB = Number(b);
+
+      if (Number.isInteger(numA) && Number.isInteger(numB)) {
+        // Both are numbers
+        return numA < numB ? -1 : 1;
+      }
+
+      return a < b ? -1 : 1;
+    };
+
+    setGroups((prevGroups) => prevGroups.map((group) => {
+      return ({
+        ...group,
+        cases: group.cases.sort((a, b) => {
+          return numbersFirst(a.name, b.name);
+        })
+      })
+    }).sort((a, b) => {
+      if (a.name === "sin_grupo")
+        return -1;
+      if (b.name === "sin_grupo")
+        return -1;
+      return numbersFirst(a.name, b.name);
+    }));
   }
 
   function editGroup(groupModified) {
@@ -207,25 +235,27 @@ export const App = () => {
     });
   }
 
-  function createCase(name, groupId, points = 0, defined = false, input = "", output = "") {
+  function createCase(props) {
+    const { name, groupId, points, defined, input, output } = props;
     return ({
       caseId: uuid(),
       name: name,
       groupId: groupId,
-      points: points,
-      defined: defined,
-      input: input,
-      output: output,
+      points: points || 0,
+      defined: defined || false,
+      input: input || "",
+      output: output || "",
     });
   }
 
-  function createGroup(name, groupId = uuid(), points = 0, defined = false, cases = []) {
+  function createGroup(props) {
+    const { name, groupId, points, defined, cases } = props;
     return ({
-      groupId: groupId,
+      groupId: groupId || uuid(),
       name: name,
-      points: points,
-      defined: defined,
-      cases: cases,
+      points: points || 0,
+      defined: defined || false,
+      cases: cases || [],
     });
   }
 
@@ -243,7 +273,7 @@ export const App = () => {
           eraseCase, eraseGroup, eraseAllGroupCases,
           editCase, editGroup,
           calculatePoints, maxPointsAvailable,
-          sortGroups
+          sortGroups,
         }}>
         <>
           <Navbar />
