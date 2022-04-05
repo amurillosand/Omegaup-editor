@@ -17,6 +17,7 @@
     "katex": "^0.15.2",
     "markdown-it": "^12.3.2",
     "markdown-it-texmath": "^0.9.7",
+    "netlify-cli": "^9.16.3",
     "raw-loader": "^4.0.2",
     "react": "^17.0.2",
     "react-ace": "^9.5.0",

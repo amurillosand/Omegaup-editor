@@ -1,0 +1,39 @@
+# Descripción
+
+Inventa una historia creativa.
+
+Puedes utilizar matemáticas inline para hacer $x_i, y_i$, o $z_i$ o incluso:
+
+$x=\frac{b\pm \sqrt{b^2 -4ac}}{2a}$
+
+# Entrada
+
+Un entero $n$ el tamaño del arreglo $a$.
+
+$n$ enteros $a_i$ separados por espacios. 
+
+# Salida
+
+La suma de todos los $a_i$
+
+# Ejemplo
+
+||input
+2
+1 2
+||output
+3
+||description
+Suma de 1 + 2
+||input
+5
+5 10 15 20 25
+||output
+75
+||description
+||end
+
+# Límites
+- $1\leq n \leq 100$
+- $1 \leq a_i \leq 1000$
+
