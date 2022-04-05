@@ -3,11 +3,11 @@ import { ChakraProvider, theme } from "@chakra-ui/react";
 import Navbar from "./pages/Navbar";
 import Header from "./pages/Header";
 import MainWindow from "./pages/MainWindow";
+import MainPage from "./pages/MainPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
 import useStateCallback from "./libs/other/useStateCallback";
-import usePrevious from "./libs/other/usePrevious";
 
 import { v4 as uuid } from "uuid";
 import { fileToString } from "./libs/other/toString"
@@ -34,7 +34,7 @@ export const App = () => {
   });
 
   const [writing, setWriting] = useState("");
-  const [title, setTitle] = useState("Problem");
+  const [title, setTitle] = useState("");
   const [groups, setGroups] = useStateCallback([]);
 
   useEffect(() => {
@@ -287,13 +287,13 @@ export const App = () => {
                 </>
               } />
 
-              {/* <Route path="/">
+              <Route path="/" element={
                 <MainPage />
-              </Route> */}
+              } />
             </Routes>
           </BrowserRouter>
         </>
       </AppContext.Provider>
-    </ChakraProvider>
+    </ChakraProvider >
   );
 };

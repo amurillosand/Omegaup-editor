@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Spacer, Flex, Image, Container, useColorModeValue } from "@chakra-ui/react";
+import { Box, Spacer, Flex, Image, Container, useColorModeValue, Text } from "@chakra-ui/react";
 
 import { ColorModeSwitcher } from "../components/ColorModeSwitcher";
 
@@ -16,9 +16,6 @@ const Navbar = () => {
           <Box w={"86px"}>
             <Image w={"100px"} src={logo} />
           </Box>
-
-          {/* <Spacer /> */}
-          {/* <Text opacity={0.5}> DEVELOPMENT BUILD</Text> */}
 
           <Spacer />
 
