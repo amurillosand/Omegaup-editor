@@ -45,7 +45,7 @@ function checkErrors(results) {
   }
 
   for (const result of results.submissions)
-    if (result.status.id !== 3) {
+    if (result.status.id > 3) {
       return ({
         title: result.status.description,
         description: result.stderr ? result.stderr : result.compile_output,
@@ -76,13 +76,13 @@ async function getTestPlan(groups, showError) {
     console.log("Test plan result: ");
 
     return ({
-      error: showError(
+      hasError: showError(
         "Puntaje incorrecto",
         `El puntaje no cuadra, la suma de los puntos da ${sum}, debería de dar 100.`,
         () => sum + 0.00001 < 100),
       data: testPlan
     })
-  }, waitingTime.testPlan);
+  }, 0);
 };
 
 async function generateInput(generator, groups, showError, checkErrors) {
@@ -113,10 +113,11 @@ async function generateInput(generator, groups, showError, checkErrors) {
     console.log("Input error: ", error);
 
     return ({
-      error: showError(error?.title, error?.description, () => error),
+      error: error,
+      hasError: showError(error?.title, error?.description, () => error),
       data: result.submissions
     })
-  }, waitingTime.input);
+  }, 0);
 }
 
 async function generateOutput(solution, input, showError, checkErrors) {
@@ -136,21 +137,25 @@ async function generateOutput(solution, input, showError, checkErrors) {
     console.log("Output error: ", error);
 
     return ({
-      error: showError(error?.title, error?.description, () => error),
+      error: error,
+      hasError: showError(error?.title, error?.description, () => error),
       data: result.submissions
     })
-  }, waitingTime.output);
+  }, 0);
 }
 
 export async function generateProblem(data, toast, updateProblemStatus) {
-  const { generator, solution, writing, title, groups, setGroups } = data;
+  const {
+    generator, solution, writing, title, groups,
+    setGroups, setGeneratorError, setSolutionError,
+  } = data;
 
   function showError(title, description = undefined, valid) {
     if (valid()) {
       console.log("Toast error: ", description);
       updateProblemStatus({
         title: title,
-        description: description,
+        // description: description,
         status: "error",
         isClosable: true,
       });
@@ -179,6 +184,9 @@ export async function generateProblem(data, toast, updateProblemStatus) {
     return;
   }
 
+  setGeneratorError(null);
+  setSolutionError(null);
+
   let zip = new JSZip();
 
   const statements = zip.folder("statements");
@@ -200,7 +208,7 @@ export async function generateProblem(data, toast, updateProblemStatus) {
     const testPlan = await getTestPlan(groups, showError);
     console.log(testPlan);
 
-    if (!testPlan.error) {
+    if (!testPlan.hasError) {
       zip.file("testplan", testPlan.data);
 
       return await asyncTimeout(async () => {
@@ -213,7 +221,7 @@ export async function generateProblem(data, toast, updateProblemStatus) {
         const input = await generateInput(generator, groups, showError, checkErrors);
         console.log(input);
 
-        if (!input.error) {
+        if (!input.hasError) {
           return await asyncTimeout(async () => {
             updateProblemStatus({
               title: `Generando respuestas`,
@@ -224,7 +232,7 @@ export async function generateProblem(data, toast, updateProblemStatus) {
             const output = await generateOutput(solution, input.data, showError, checkErrors);
             console.log(output);
 
-            if (!output.error) {
+            if (!output.hasError) {
               let i = 0;
               const results = new Map();
               for (const group of groups) {
@@ -255,15 +263,17 @@ export async function generateProblem(data, toast, updateProblemStatus) {
                 }))
               })));
             } else {
-              return output.error;
+              setSolutionError(output.error);
+              return output.hasError;
             }
           }, waitingTime.output);
         } else {
-          return input.error;
+          setGeneratorError(input.error);
+          return input.hasError;
         }
       }, waitingTime.input);
     } else {
-      return testPlan.error;
+      return testPlan.hasError;
     }
   }, waitingTime.testPlan).then(async (anyError) => {
     console.log("any error:", anyError);

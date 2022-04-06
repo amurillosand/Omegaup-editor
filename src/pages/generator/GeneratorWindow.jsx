@@ -28,7 +28,7 @@ import { useRef, useState } from "react";
 
 const GeneratorWindow = () => {
   // TODO: Bloquear mi Random en el código (?)
-  const { generator, setGenerator } = useAppContext();
+  const { generator, setGenerator, generatorError } = useAppContext();
 
   const editorHeight = 695;
   const [showCode, setShowCode] = useState(true);
@@ -65,6 +65,7 @@ const GeneratorWindow = () => {
         {showCode && (
           <Box w={"100%"}>
             <CodeEditor
+              error={generatorError}
               code={generator.code}
               setCode={(newCode) => {
                 setGenerator((prevState) => ({

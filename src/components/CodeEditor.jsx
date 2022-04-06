@@ -8,7 +8,9 @@ import {
   Text,
   Button,
   AlertDialogCloseButton,
+  Alert,
   useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import AceEditor from "react-ace";
@@ -23,6 +25,7 @@ import "ace-builds/src-min-noconflict/ext-language_tools";
 import { useState, useEffect } from "react";
 import { languages } from "../libs/coding/codeLanguages"
 import { runSingle, runMultiple, getResult } from "../libs/coding/runCodeApi";
+import AlertDismissable from "./AlertDimissable";
 
 languages.forEach((language) => {
   require(`ace-builds/src-noconflict/mode-${language.ace}`);
@@ -30,12 +33,13 @@ languages.forEach((language) => {
 });
 
 const CodeEditor = (props) => {
-  const { code, setCode, language, setLanguage, height } = props;
+  const { code, setCode, language, setLanguage, height, error } = props;
   const [fontSize, setFontSize] = useState(14);
   const [languageIndex, setLanguageIndex] = useState(0);
 
   const codeStyle = useColorModeValue("tomorrow", "monokai");
   const codeToolbarStyle = useColorModeValue("#F9F9F9", "#2C323D");
+  const showError = useDisclosure();
 
   function handleFontSize(size) {
     setFontSize(size);
@@ -83,6 +87,10 @@ const CodeEditor = (props) => {
 
           </HStack>
         </Box>
+
+        <AlertDismissable
+          show={error ? true : false}
+          error={error} />
 
         <AceEditor
           placeholder={"Ingresa el código que soluciona el problema aquí"}

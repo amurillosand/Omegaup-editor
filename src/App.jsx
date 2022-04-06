@@ -33,6 +33,9 @@ export const App = () => {
     text: ""
   });
 
+  const [solutionError, setSolutionError] = useState(null);
+  const [generatorError, setGeneratorError] = useState(null);
+
   const [writing, setWriting] = useState("");
   const [title, setTitle] = useState("");
   const [groups, setGroups] = useStateCallback([]);
@@ -274,6 +277,8 @@ export const App = () => {
           editCase, editGroup,
           calculatePoints, maxPointsAvailable,
           sortGroups,
+          solutionError, setSolutionError,
+          generatorError, setGeneratorError
         }}>
         <>
           <Navbar />

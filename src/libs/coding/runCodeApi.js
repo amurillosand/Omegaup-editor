@@ -193,10 +193,11 @@ async function runBatch(data) {
 
     let state = {
       status: 0,
+      accepted: 0,
       submissions: []
     }
 
-    do {
+    while (state.status <= 2 || (state.status === 3 && state.accepted < tokens.length)) {
       const getState = await fetch(queryUrl, {
         method: "GET",
         mode: "cors",
@@ -207,18 +208,21 @@ async function runBatch(data) {
         },
       });
 
-      // Wait 10 seconds for the answer
-      setTimeout(async () => {
-        state = await getState.json();
-        state.status = 1e9;
-        for (let submission of state.submissions) {
-          state.status = Math.min(state.status, submission.status.id);
-          if (state.status <= 2)
-            break;
+      state = await getState.json();
+      state.status = 0;
+      state.accepted = 0;
+      for (let submission of state.submissions) {
+        if (submission.status.id <= 2) {
+          // In Queue or Processing
+        } else if (submission.status.id === 3) {
+          state.accepted++;
+        } else {
+          state.status = Math.max(state.status, submission.status.id);
         }
-      }, 10000);
+      }
 
-    } while (state.status <= 2);
+      console.log(state.status, tokens.length);
+    }
 
     return state;
   });
@@ -254,8 +258,8 @@ export async function runMultiple(data) {
   data = data.map((element) => ({
     ...element,
     compiler_options: getCompilerOptions(element.language_id),
-    cpu_time_limit: 10,
-    cpu_extra_time: 2,
+    cpu_time_limit: 15,
+    cpu_extra_time: 5,
     memory_limit: 300000
   }));
 
@@ -265,16 +269,14 @@ export async function runMultiple(data) {
 
   const results = await Promise.all(batches.map(async (data) => {
     const batchResult = await runBatch(data);
+    console.log(batchResult);
 
     return new Promise((resolve, reject) => {
-      if (batchResult.status === 3) {
-        resolve(batchResult);
-      } else {
-        reject(batchResult);
-      }
+      resolve(batchResult);
     })
   }));
 
+  console.log(results);
 
   // Merge all batches into one
   const allResults = results[0];

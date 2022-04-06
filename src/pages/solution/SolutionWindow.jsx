@@ -22,7 +22,7 @@ import { useRef, useState, useEffect } from "react";
 import { useAppContext } from "../../App";
 
 const SolutionWindow = () => {
-  const { solution, setSolution } = useAppContext();
+  const { solution, setSolution, solutionError } = useAppContext();
 
   const [editorHeight, setEditorHeight] = useState(695);
   const [showCode, setShowCode] = useState(true);
@@ -63,6 +63,7 @@ const SolutionWindow = () => {
         {showCode && (
           <Box w={"100%"}>
             <CodeEditor
+              error={solutionError}
               code={solution.code}
               setCode={(newCode) => {
                 setSolution((prevState) => ({
