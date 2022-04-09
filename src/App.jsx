@@ -14,6 +14,7 @@ import { fileToString } from "./libs/other/toString"
 import writingTemplate from "./pages/writing/template.txt"
 import solutionTemplate from "./pages/solution/solution.cpp"
 import generatorTemplate from "./pages/generator/generator.cpp"
+import generateCases from "./pages/generator/generateCases.py"
 
 export const AppContext = React.createContext(null);
 
@@ -40,6 +41,8 @@ export const App = () => {
   const [title, setTitle] = useState("");
   const [groups, setGroups] = useStateCallback([]);
 
+  const [generateCases, setGenerateCases] = useState({});
+
   useEffect(() => {
     fileToString(solutionTemplate).then((data) => {
       setSolution((prevState) => ({
@@ -47,6 +50,13 @@ export const App = () => {
         code: data,
         language: "cpp",
       }));
+    });
+
+    fileToString(generateCases).then((data) => {
+      setGenerateCases({
+        code: data,
+        language: "py"
+      });
     });
 
     fileToString(writingTemplate).then((data) => {
@@ -266,7 +276,7 @@ export const App = () => {
     <ChakraProvider theme={theme}>
       <AppContext.Provider
         value={{
-          generator, setGenerator,
+          generator, setGenerator, generateCases,
           solution, setSolution,
           writing, setWriting,
           title, setTitle,

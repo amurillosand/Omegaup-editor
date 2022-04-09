@@ -146,7 +146,7 @@ async function generateOutput(solution, input, showError, checkErrors) {
 
 export async function generateProblem(data, toast, updateProblemStatus) {
   const {
-    generator, solution, writing, title, groups,
+    generator, solution, writing, title, groups, generateCases,
     setGroups, setGeneratorError, setSolutionError,
   } = data;
 
@@ -210,7 +210,10 @@ export async function generateProblem(data, toast, updateProblemStatus) {
 
     if (!testPlan.hasError) {
       zip.file("testplan", testPlan.data);
+      zip.file(`generateCases.${generateCases.language}`, generateCases.code);
 
+      /*
+      // Works but it's limited :c
       return await asyncTimeout(async () => {
         updateProblemStatus({
           title: `Generando casos de prueba`,
@@ -272,6 +275,7 @@ export async function generateProblem(data, toast, updateProblemStatus) {
           return input.hasError;
         }
       }, waitingTime.input);
+      */
     } else {
       return testPlan.hasError;
     }
@@ -287,7 +291,7 @@ export async function generateProblem(data, toast, updateProblemStatus) {
         if (!anyError) {
           updateProblemStatus({
             title: "Problema generado exitosamente",
-            description: `El problema \"${title}\" ya está listo para ser subido a omegaup; revise que todo esté como usted esperaba.`,
+            description: `El problema \"${title}\" ya está configurado para ser subido a omegaup; revise que todo esté como usted esperaba y corra localmente generateCases.py.`,
             status: "success",
             isClosable: true,
             duration: waitingTime.closeToast,

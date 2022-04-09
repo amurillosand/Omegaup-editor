@@ -1,4 +1,5 @@
 import { languages } from "./codeLanguages";
+import { asyncTimeout } from "../other/asyncFunctions";
 
 const host = "judge0-ce.p.rapidapi.com";
 const key = "fe7a7756f3msh3411c39d31e2e5bp17ff1cjsna0cc3b86c16f";
@@ -189,42 +190,51 @@ async function runBatch(data) {
       tokensStr += tokens[i].token;
     }
 
+
+    async function fetchWithRetry(url, args, retryLimit, retryCount = 0) {
+      return await asyncTimeout(async () => {
+        console.log(retryCount, "/", retryLimit);
+
+        return await fetch(url, args)
+          .then((result) => result.json())
+          .then((result) => {
+            result.status = 0;
+            result.accepted = 0;
+
+            for (let submission of result.submissions) {
+              if (submission.status.id <= 2) {
+                // In Queue or Processing
+              } else if (submission.status.id === 3) {
+                result.accepted++;
+              } else {
+                result.status = Math.max(result.status, submission.status.id);
+              }
+            }
+
+            let valid = (result.status <= 2 || (result.status === 3 && result.accepted < tokens.length));
+            console.log("result:", result, ", valid:", valid);
+
+            if (!valid && retryCount < retryLimit) {
+              console.log("There was an error processing your fetch request. We are trying again.");
+              return fetchWithRetry(url, args, retryLimit, retryCount + 1);
+            } else {
+              return result;
+            }
+          });
+      }, 5000);
+    }
+
     const queryUrl = `https://judge0-ce.p.rapidapi.com/submissions/batch?tokens=${tokensStr}&base64_encoded=true`;
 
-    let state = {
-      status: 0,
-      accepted: 0,
-      submissions: []
-    }
-
-    while (state.status <= 2 || (state.status === 3 && state.accepted < tokens.length)) {
-      const getState = await fetch(queryUrl, {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "x-rapidapi-host": host,
-          "x-rapidapi-key": key,
-          "content-type": "application/json",
-        },
-      });
-
-      state = await getState.json();
-      state.status = 0;
-      state.accepted = 0;
-      for (let submission of state.submissions) {
-        if (submission.status.id <= 2) {
-          // In Queue or Processing
-        } else if (submission.status.id === 3) {
-          state.accepted++;
-        } else {
-          state.status = Math.max(state.status, submission.status.id);
-        }
-      }
-
-      console.log(state.status, tokens.length);
-    }
-
-    return state;
+    return await fetchWithRetry(queryUrl, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "x-rapidapi-host": host,
+        "x-rapidapi-key": key,
+        "content-type": "application/json",
+      },
+    }, 10);
   });
 }
 
