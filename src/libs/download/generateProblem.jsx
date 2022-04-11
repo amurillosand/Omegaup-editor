@@ -210,7 +210,7 @@ export async function generateProblem(data, toast, updateProblemStatus) {
 
     if (!testPlan.hasError) {
       zip.file("testplan", testPlan.data);
-      zip.file(`generateCases.${generateCases.language}`, generateCases.code);
+      zip.file(`generateCases.py`, generateCases.code);
 
       /*
       // Works but it's limited :c
