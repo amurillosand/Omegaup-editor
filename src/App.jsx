@@ -14,7 +14,7 @@ import { fileToString } from "./libs/other/toString"
 import writingTemplate from "./pages/writing/template.txt"
 import solutionTemplate from "./pages/solution/solution.cpp"
 import generatorTemplate from "./pages/generator/generator.cpp"
-import generateCasesTemplate from "./pages/generator/generateCases.py"
+import generateCasesTemplate from "./pages/generator/generateCases.txt"
 
 export const AppContext = React.createContext(null);
 

@@ -68,6 +68,10 @@ with open("testplan") as testPlan:
         trash = open("trash", 'w')
         trash.write(f"{groupTestCase}")
         trash.close()
+
+        if line[0].startswith("sin_grupo"):
+            line[0] = line[0][10:]
+
         inputFile = f"cases/{line[0]}.in"
         outputFile = f"cases/{line[0]}.out"
 
