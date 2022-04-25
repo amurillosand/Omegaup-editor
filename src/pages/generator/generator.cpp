@@ -162,16 +162,16 @@ int main() {
 
   Random random;
 
-  string groupName, testCaseName;
-  cin >> groupName >> testCaseName;
+  string group, testCase;
+  cin >> group >> testCase;
 
   int n;
 
-  if (groupName == "easy") {
+  if (group == "easy") {
     n = random.get<int>(1, 10);
-  } else if (groupName == "hard") {
+  } else if (group == "hard") {
     n = random.get<int>(1, 100);
-  } else if (startsWith(testCaseName, "example")) {
+  } else if (startsWith(testCase, "example")) {
     n = 2;
   }
 
