@@ -2,6 +2,7 @@ from typing import NamedTuple
 import shutil
 import glob
 import os
+from sys import platform
 
 
 class Code(NamedTuple):
@@ -40,7 +41,10 @@ def compileIfNeeded(code):
 
 def run(code, inputFile, outputFile):
     if code[2] == ".cpp":
-        os.system(f"./{code.name}.out < {inputFile} > {outputFile}")
+        if platform == "win32":
+            os.system(f"{code.name}.out < {inputFile} > {outputFile}")
+        else:
+            os.system(f"./{code.name}.out < {inputFile} > {outputFile}")
     else:
         os.system(f"python3 {code.file} < {inputFile} > {outputFile}")
 
