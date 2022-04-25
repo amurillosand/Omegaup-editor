@@ -4,7 +4,7 @@ import Navbar from "./pages/Navbar";
 import Header from "./pages/Header";
 import MainWindow from "./pages/MainWindow";
 import MainPage from "./pages/MainPage";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter , Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
 import useStateCallback from "./libs/other/useStateCallback";
@@ -293,7 +293,7 @@ export const App = () => {
         <>
           <Navbar />
 
-          <BrowserRouter>
+          <HashRouter>
             <Routes>
               <Route path="/editor" element={
                 <>
@@ -306,7 +306,7 @@ export const App = () => {
                 <MainPage />
               } />
             </Routes>
-          </BrowserRouter>
+          </HashRouter>
         </>
       </AppContext.Provider>
     </ChakraProvider >
