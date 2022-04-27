@@ -37,16 +37,21 @@ def searchFile(filename):
 def compileIfNeeded(code):
     if code.extension == ".cpp":
         os.system(f"g++ --std=c++17 {code.file} -o {code.name}.out")
+    elif code.extension == ".java":
+        print("No sé correr Java, arregle esto (línea 42 y 54)")
+        os.system(f"javac {code.file}")
 
 
 def run(code, inputFile, outputFile):
-    if code[2] == ".cpp":
+    if code.extension == ".cpp":
         if platform == "win32":
             os.system(f"{code.name}.out < {inputFile} > {outputFile}")
         else:
             os.system(f"./{code.name}.out < {inputFile} > {outputFile}")
-    else:
+    elif code.extension == ".py":
         os.system(f"python3 {code.file} < {inputFile} > {outputFile}")
+    elif code.extension == ".java":
+        os.system(f"java {code.name}")
 
 
 def createFolder(folderName):

@@ -4,7 +4,7 @@ import Navbar from "./pages/Navbar";
 import Header from "./pages/Header";
 import MainWindow from "./pages/MainWindow";
 import MainPage from "./pages/MainPage";
-import { HashRouter , Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
 import useStateCallback from "./libs/other/useStateCallback";
@@ -14,7 +14,7 @@ import { fileToString } from "./libs/other/toString"
 import writingTemplate from "./pages/writing/template.txt"
 import solutionTemplate from "./pages/solution/solution.cpp"
 import generatorTemplate from "./pages/generator/generator.cpp"
-import generateCasesTemplate from "./pages/generator/generateCases.txt"
+import generateCasesTemplate from "./pages/generator/generateCases.py"
 
 export const AppContext = React.createContext(null);
 

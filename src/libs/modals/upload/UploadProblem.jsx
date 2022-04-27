@@ -25,6 +25,7 @@ import { useDropzone } from "react-dropzone";
 import { useState } from "react";
 import { useAppContext } from "../../../App";
 import { asyncTimeout } from "../../other/asyncFunctions";
+import { validExtension } from "../../coding/codeLanguages"
 
 import JSZip from "jszip";
 
@@ -129,13 +130,13 @@ const UploadProblem = (props) => {
                 ...prevState,
                 text: fileData
               }));
-            } else if (name === "solution") {
+            } else if (name === "solution" && validExtension(extension)) {
               setSolution((prevState) => ({
                 ...prevState,
                 code: fileData,
                 language: extension
               }));
-            } else if (name === "generator") {
+            } else if (name === "generator" && validExtension(extension)) {
               setGenerator({
                 code: fileData,
                 language: extension
