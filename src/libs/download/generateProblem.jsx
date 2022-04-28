@@ -62,7 +62,7 @@ async function getTestPlan(groups, showError) {
     groups.forEach((group) => {
       if (group.name === "sin_grupo") {
         group.cases.forEach((testCase) => {
-          testPlan += `${group.name}.${testCase.name} ${testCase.points}\n`;
+          testPlan += `${testCase.name} ${testCase.points}\n`;
           sum += testCase.points;
         });
       } else {

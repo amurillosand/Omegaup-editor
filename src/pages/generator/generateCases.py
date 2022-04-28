@@ -72,6 +72,10 @@ compileIfNeeded(generator)
 with open("testplan") as testPlan:
     for line in testPlan:
         line = line.split(" ")
+
+        if line[0].find(".") == -1:
+            line[0] = "sin_grupo." + line[0]
+
         groupTestCase = line[0].replace(".", " ")
 
         trash = open("trash", 'w')

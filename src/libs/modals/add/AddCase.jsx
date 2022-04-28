@@ -49,6 +49,7 @@ const AddCase = (props) => {
     const validName = caseNameRef.current.replaceAll(" ", "_");
 
     const selectedGroup = groups.find(group => group.groupId == selectedGroupId);
+    const points = pointsRef.current / numberOfCasesRef.current;
 
     if (numberOfCasesRef.current == 1) {
       const caseExists = selectedGroup.cases.find(
@@ -90,8 +91,8 @@ const AddCase = (props) => {
                 caseId: uuid(),
                 name: name,
                 groupId: selectedGroupId,
-                points: 0,
-                defined: false,
+                points: pointsDefinedRef.current ? points : 0,
+                defined: pointsDefinedRef.current,
                 input: "",
                 output: "",
               });
