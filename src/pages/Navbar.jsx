@@ -11,7 +11,7 @@ const Navbar = () => {
 
   return (
     <Box boxShadow={"md"}>
-      <Container maxW={"container.lg"}>
+      <Container maxW={"container.xl"}>
         <Flex align={"center"} height={"38px"}>
           <Box w={"86px"}>
             <Image w={"100px"} src={logo} />

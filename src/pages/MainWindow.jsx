@@ -3,12 +3,14 @@ import { Container, HStack, Kbd } from "@chakra-ui/react";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { BiCodeBlock as CodeIcon } from "react-icons/bi";
 import { BsPencil as EditIcon } from "react-icons/bs";
+import { FiCheckSquare } from "react-icons/fi";
 import { IoMdCheckmarkCircleOutline as CheckIcon } from "react-icons/io";
 
 import SolutionWindow from "./solution/SolutionWindow";
 import WritingWindow from "./writing/WritingWindow";
 import GeneratorWindow from "./generator/GeneratorWindow";
 import CasesWindow from "./cases/CasesWindow";
+import ValidatorWindow from "./validator/ValidatorWindow";
 
 const MainWindow = () => {
   const [tabIndex, setTab] = React.useState(0);
@@ -23,7 +25,7 @@ const MainWindow = () => {
   function handleShorcuts(key) {
     // console.log(key.which);
     if (key.ctrlKey) {
-      if (49 <= key.which && key.which <= 52) {
+      if (49 <= key.which && key.which <= 53) {
         setTab(key.which - 49);
       }
     }
@@ -31,7 +33,7 @@ const MainWindow = () => {
 
   return (
     <>
-      <Container maxW={"container.lg"} mt={3} h={"80vh"} padding={"0"}>
+      <Container maxW={"container.xl"} mt={3} h={"80vh"} padding={"0"}>
         <Tabs
           variant={"enclosed"}
           size={"sm"}
@@ -78,6 +80,16 @@ const MainWindow = () => {
                 </span>
               </HStack>
             </Tab>
+
+            <Tab>
+              <HStack>
+                <FiCheckSquare />
+                <p>Validador</p>
+                <span>
+                  <Kbd>Ctrl</Kbd>+<Kbd>5</Kbd>
+                </span>
+              </HStack>
+            </Tab>
           </TabList>
 
           <TabPanels>
@@ -95,6 +107,10 @@ const MainWindow = () => {
 
             <TabPanel>
               <CasesWindow />
+            </TabPanel>
+
+            <TabPanel>
+              <ValidatorWindow />
             </TabPanel>
           </TabPanels>
 

@@ -107,7 +107,7 @@ const SolutionWindow = () => {
         <SadSloth />
       )}
 
-      <Box pos={"fixed"} zIndex={5} left={3} bottom={5}>
+      <Box pos={"fixed"} zIndex={5} right={10} bottom={5}>
         <VStack>
           <Button
             data-test={"show-code"}

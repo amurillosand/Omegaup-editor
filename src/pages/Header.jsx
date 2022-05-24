@@ -74,7 +74,7 @@ const Header = () => {
   }
 
   return (
-    <Container maxW={"container.lg"}>
+    <Container maxW={"container.xl"}>
       <Box mt={"5"}>
         <HStack>
           <Editable

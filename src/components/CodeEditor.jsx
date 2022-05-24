@@ -33,7 +33,7 @@ languages.forEach((language) => {
 });
 
 const CodeEditor = (props) => {
-  const { code, setCode, language, setLanguage, height, error } = props;
+  const { code, setCode, language, setLanguage, height, error, hidden } = props;
   const [fontSize, setFontSize] = useState(14);
   const [languageIndex, setLanguageIndex] = useState(0);
 
@@ -50,8 +50,11 @@ const CodeEditor = (props) => {
   }, [languageIndex]);
 
   return (
-    <>
-      <Box border={"0.5px solid #C8CCD0"} borderRadius={2}>
+    <div hidden={hidden | false}>
+      < Box
+        zIndex={0}
+        border={"0.5px solid #C8CCD0"}
+        borderRadius={2} >
         <Box
           borderBottom={"0.5px solid #C8CCD0"}
           bg={codeToolbarStyle}
@@ -93,6 +96,7 @@ const CodeEditor = (props) => {
           error={error} />
 
         <AceEditor
+          zIndex={-1}
           placeholder={"Ingresa el código que soluciona el problema aquí"}
           mode={languages[languageIndex].ace}
           theme={codeStyle}
@@ -109,8 +113,8 @@ const CodeEditor = (props) => {
             tabSize: 2,
           }}
         />
-      </Box>
-    </>
+      </Box >
+    </div>
   )
 };
 

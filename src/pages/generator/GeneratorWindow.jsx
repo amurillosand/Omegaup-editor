@@ -87,10 +87,10 @@ const GeneratorWindow = () => {
 
         {showExplanation && (
           <Box ml={5} w={showCode ? "50%" : "100%"}>
-            <Box
+            <Text
               dangerouslySetInnerHTML={{ __html: generatorInformation }}
               className={style + " markdown"}>
-            </Box>
+            </Text>
           </Box>
         )}
       </Flex>
@@ -101,7 +101,7 @@ const GeneratorWindow = () => {
         )
       }
 
-      <Box pos={"fixed"} zIndex={5} left={3} bottom={5}>
+      <Box pos={"fixed"} zIndex={50000} right={10} bottom={5}>
         <VStack>
           <Button
             ref={showCodeRef}
@@ -110,7 +110,9 @@ const GeneratorWindow = () => {
             width={"200px"}
             onClick={() => setShowCode(!showCode)}>
             <HStack>
-              <Text> {showCode ? "Ocultar código" : "Mostrar código"}</Text>
+              <Text>
+                {showCode ? "Ocultar código" : "Mostrar código"}
+              </Text>
               <Text fontSize={"smaller"} opacity={"0.5"}>
                 Ctrl + H
               </Text>

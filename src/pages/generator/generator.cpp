@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+#define fore(i, l, r) for (auto i = (l); i < (r); i++)
+
 struct Random {
   mt19937 rng;
 
@@ -142,7 +144,7 @@ struct Random {
 bool startsWith(const string& str, const string& prefix) {
   if (prefix.size() > str.size())
     return false;
-  for (int i = 0; i < prefix.size(); i++)
+  fore (i, 0, prefix.size())
     if (str[i] != prefix[i])
       return false;
   return true;
@@ -151,7 +153,7 @@ bool startsWith(const string& str, const string& prefix) {
 bool endsWith(const string& str, const string& suffix) {
   if (suffix.size() > str.size())
     return false;
-  for (int i = 0; i < suffix.size(); i++)
+  fore (i, 0, suffix.size())
     if (str[str.size() - 1 - i] != suffix[suffix.size() - 1 - i])
       return false;
   return true;

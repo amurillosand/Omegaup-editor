@@ -97,7 +97,7 @@ const CasesWindow = () => {
 
       </Flex>
 
-      <VStack pos={"fixed"} right={10} bottom={5}>
+      <VStack pos={"fixed"} zIndex={5} right={10} bottom={5}>
         <Button
           disabled={selected.caseId === null || selected.groupId === null}
           size={"sm"}

@@ -146,8 +146,10 @@ async function generateOutput(solution, input, showError, checkErrors) {
 
 export async function generateProblem(data, toast, updateProblemStatus) {
   const {
-    generator, solution, writing, title, groups, generateCases,
-    setGroups, setGeneratorError, setSolutionError,
+    generator, solution, writing, title,
+    validator, needsValidator,
+    groups,
+    generateCases, setGroups, setGeneratorError, setSolutionError,
   } = data;
 
   function showError(title, description = undefined, valid) {
@@ -198,6 +200,10 @@ export async function generateProblem(data, toast, updateProblemStatus) {
   solutions.file(`solution.${solution.language}`, solution.code);
   solutions.file(`generator.${generator.language}`, generator.code);
 
+  if (needsValidator) {
+    zip.file(`validator.${validator.language}`, validator.code);
+  }
+
   await asyncTimeout(async () => {
     updateProblemStatus({
       title: `Revisando puntaje`,
@@ -220,10 +226,10 @@ export async function generateProblem(data, toast, updateProblemStatus) {
           description: "El generador se está ejecutando para generar los casos de prueba",
           status: "success",
         });
-
+ 
         const input = await generateInput(generator, groups, showError, checkErrors);
         console.log(input);
-
+ 
         if (!input.hasError) {
           return await asyncTimeout(async () => {
             updateProblemStatus({
@@ -231,10 +237,10 @@ export async function generateProblem(data, toast, updateProblemStatus) {
               description: "Se está ejecutando tu solución con los casos de prueba obtenidos anteriormente.",
               status: "success",
             });
-
+ 
             const output = await generateOutput(solution, input.data, showError, checkErrors);
             console.log(output);
-
+ 
             if (!output.hasError) {
               let i = 0;
               const results = new Map();
@@ -243,19 +249,19 @@ export async function generateProblem(data, toast, updateProblemStatus) {
                   if (testCase.input.length > 0 && testCase.output.length > 0) {
                     continue;
                   }
-
+ 
                   cases.file(`${group.name}.${testCase.name}.in`, input.data[i].stdout);
                   cases.file(`${group.name}.${testCase.name}.out`, output.data[i].stdout);
-
+ 
                   results.set(testCase.caseId, {
                     input: input.data[i].stdout,
                     output: output.data[i].stdout,
                   });
-
+ 
                   i++;
                 }
               }
-
+ 
               // Update groups with generated input/output
               setGroups((prevGroups) => prevGroups.map((group) => ({
                 ...group,

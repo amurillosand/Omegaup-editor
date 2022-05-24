@@ -35,7 +35,7 @@ const WritingWindow = () => {
   const [showEditor, setShowEditor] = useState(true);
 
   const divRef = useRef(null);
-  const generateRef = useRef(null);
+  const editorRef = useRef(null);
   const hideRef = useRef(null);
 
   useEffect(() => {
@@ -53,12 +53,8 @@ const WritingWindow = () => {
 
   function handleKeyPress(key) {
     if (key.ctrlKey) {
-      if (key.which === 83 && generateRef.current !== null) {
-        generateRef.current.click();
-      }
-      if (key.which === 72 && hideRef.current !== null) {
-        hideRef.current.click();
-        hideRef.current.focus();
+      if (key.which === 83 && editorRef.current !== null) {
+        editorRef.current.click();
       }
     }
   }
@@ -72,15 +68,17 @@ const WritingWindow = () => {
       <Flex direction={"column"} w={"100%"}>
         <Flex>
           {showEditor && (
-            <Box className={style}>
-              {/* <Text> Editor </Text> */}
-
-              <ReactMde value={writing} onChange={setWriting} />
+            <Box
+              className={style}
+              w="50%">
+              <ReactMde
+                ref={editorRef}
+                value={writing}
+                onChange={setWriting} />
             </Box>
           )}
-          <Box ml={5} w={showEditor ? "50%" : "100%"}>
-            {/* <Text> Texto </Text> */}
 
+          <Box ml={5} w={showEditor ? "50%" : "100%"}>
             <Box
               ref={divRef}
               className={style + " markdown"}
@@ -89,7 +87,7 @@ const WritingWindow = () => {
         </Flex>
       </Flex>
 
-      <Box pos={"fixed"} left={3} bottom={5}>
+      <Box pos={"fixed"} zIndex={5} right={10} bottom={5}>
         <Button
           ref={hideRef}
           size={"sm"}
@@ -98,7 +96,9 @@ const WritingWindow = () => {
           onClick={() => handleToggleEditor()}
         >
           <HStack>
-            <Text> {showEditor ? "Ocultar editor" : "Mostrar editor"} </Text>
+            <Text>
+              {showEditor ? "Ocultar editor" : "Mostrar editor"}
+            </Text>
             <Text fontSize={"smaller"} opacity={"0.5"}>
               Ctrl + H
             </Text>

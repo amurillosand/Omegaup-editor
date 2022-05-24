@@ -76,6 +76,7 @@ const UploadProblem = (props) => {
   const { isOpen, onClose, handleUploadProblem } = props;
   const {
     setGenerator, setSolution, setWriting,
+    setValidator, setNeedsValidator,
     createCase, createGroup,
     addGroup, addCase,
     editCase, editGroup,
@@ -146,12 +147,16 @@ const UploadProblem = (props) => {
             // a.in
             // a.1.in
             const { groupName, caseName } = splitTestCase(name);
+            // console.log("groupName: ", groupName, extension, ", caseName: ", caseName, ", fileData: ", fileData)
 
             let groupData = groupNameToData.get(groupName);
 
             let caseData = null;
             if (!caseNameToData.has(name)) {
-              caseData = createCase({ name: caseName, groupId: groupData.groupId });
+              caseData = createCase({
+                name: caseName,
+                groupId: groupData.groupId
+              });
               caseNameToData.set(name, caseData);
               addCase(caseData);
             } else {
@@ -168,6 +173,7 @@ const UploadProblem = (props) => {
             caseNameToData.set(name, caseData);
             editCase(caseData);
 
+            // console.log("caseData:", caseData);
           } else if (name.startsWith("testplan")) {
             let testPlan = fileData.split("\n");
             let groupNameToPoints = new Map();
@@ -186,7 +192,6 @@ const UploadProblem = (props) => {
               }
             }
 
-
             groupNameToPoints.forEach((points, groupName) => {
               if (groupName === "sin_grupo") {
                 let groupData = groups[0];
@@ -202,13 +207,16 @@ const UploadProblem = (props) => {
                 addGroup(groupData);
               }
             });
+          } else if (name.startsWith("validator") && validExtension(extension)) {
+            setNeedsValidator(true);
+            setValidator({
+              code: fileData,
+              language: extension
+            });
           }
         })
       })
-
-      console.log("Done");
     }).then(() => {
-      console.log("Close");
       setIsUploading(false);
       handleUploadProblem();
     });

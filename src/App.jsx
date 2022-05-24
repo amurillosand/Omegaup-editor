@@ -15,6 +15,7 @@ import writingTemplate from "./pages/writing/template.txt"
 import solutionTemplate from "./pages/solution/solution.cpp"
 import generatorTemplate from "./pages/generator/generator.cpp"
 import generateCasesTemplate from "./pages/generator/generateCases.py"
+import validatorTemplate from "./pages/validator/validator.cpp"
 
 export const AppContext = React.createContext(null);
 
@@ -24,6 +25,12 @@ export function useAppContext() {
 
 export const App = () => {
   const [generator, setGenerator] = useState({
+    code: "",
+    language: "cpp",
+  });
+
+  const [needsValidator, setNeedsValidator] = useState(false);
+  const [validator, setValidator] = useState({
     code: "",
     language: "cpp",
   });
@@ -65,6 +72,13 @@ export const App = () => {
 
     fileToString(generatorTemplate).then((data) => {
       setGenerator({
+        code: data,
+        language: "cpp",
+      });
+    });
+
+    fileToString(validatorTemplate).then((data) => {
+      setValidator({
         code: data,
         language: "cpp",
       });
@@ -272,10 +286,14 @@ export const App = () => {
     });
   }
 
+  console.log("groups:", groups);
+
   return (
     <ChakraProvider theme={theme}>
       <AppContext.Provider
         value={{
+          needsValidator, setNeedsValidator,
+          validator, setValidator,
           generator, setGenerator, generateCases,
           solution, setSolution,
           writing, setWriting,
