@@ -14,7 +14,7 @@ void readTestCase() {
 void readCorrect() {
   ifstream cin("data.out");
 
-  // Leer la salida esperada
+  // Leer la salida esperada (No es necesario)
 
   cin.close();
 }
@@ -33,5 +33,6 @@ int main() {
   readCorrect();
 
   cout << fixed << setprecision(2) << score() << '\n';
+  
   return 0;
 }
