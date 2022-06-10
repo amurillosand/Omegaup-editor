@@ -141,30 +141,32 @@ struct Random {
   }
 };
 
-bool startsWith(const string& str, const string& prefix) {
-  if (prefix.size() > str.size())
-    return false;
-  fore (i, 0, prefix.size())
-    if (str[i] != prefix[i])
+struct String : string {
+  bool startsWith(const string& prefix) {
+    if (prefix.size() > size())
       return false;
-  return true;
-}
+    fore (i, 0, prefix.size())
+      if (at(i) != prefix[i])
+        return false;
+    return true;
+  }
 
-bool endsWith(const string& str, const string& suffix) {
-  if (suffix.size() > str.size())
-    return false;
-  fore (i, 0, suffix.size())
-    if (str[str.size() - 1 - i] != suffix[suffix.size() - 1 - i])
+  bool endsWith(const string& suffix) {
+    if (suffix.size() > size())
       return false;
-  return true;
-}
+    fore (i, 0, suffix.size())
+      if (at(size() - 1 - i) != suffix[suffix.size() - 1 - i])
+        return false;
+    return true;
+  }
+};
 
 int main() {
   cin.tie(0)->sync_with_stdio(0), cout.tie(0);
 
   Random random;
 
-  string group, testCase;
+  String group, testCase;
   cin >> group >> testCase;
 
   int n;
@@ -173,7 +175,7 @@ int main() {
     n = random.get<int>(1, 10);
   } else if (group == "hard") {
     n = random.get<int>(1, 100);
-  } else if (startsWith(testCase, "example")) {
+  } else if (testCase.startsWith("example")) {
     n = 2;
   }
 
