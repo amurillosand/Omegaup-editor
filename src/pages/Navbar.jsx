@@ -1,10 +1,11 @@
 import React from "react";
-import { Box, Spacer, Flex, Image, Container, useColorModeValue, Text } from "@chakra-ui/react";
-
+import { Box, Spacer, Flex, Image, Container, useColorModeValue, Text, Tooltip, Icon } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import { ColorModeSwitcher } from "../components/ColorModeSwitcher";
 
 import dark from "../assets/images/logoDark.png";
 import light from "../assets/images/logoLight.png";
+import OtherTools from "./OtherTool";
 
 const Navbar = () => {
   const logo = useColorModeValue(light, dark);
@@ -14,10 +15,16 @@ const Navbar = () => {
       <Container maxW={"container.xl"}>
         <Flex align={"center"} height={"38px"}>
           <Box w={"86px"}>
-            <Image w={"100px"} src={logo} />
+            <a href="/#/">
+              <Image w={"100px"} src={logo} />
+            </a>
           </Box>
 
           <Spacer />
+
+          <Box>
+            <OtherTools />
+          </Box>
 
           <Box>
             <ColorModeSwitcher />
