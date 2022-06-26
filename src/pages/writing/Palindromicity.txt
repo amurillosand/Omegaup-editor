@@ -1,0 +1,43 @@
+# Descripción
+
+Se le da un entero $n$. Genere cualquier cadena de letras minúsculas con una longitud como máximo de $300$ que tenga exactamente $n$ subcadenas palindrómicas.
+
+Recordemos que $p$ es una subcadena de $q$ si $p$ se puede obtener eliminando varios caracteres (posiblemente ninguno) del principio y del final de $q$. 
+
+También recuerde que un palíndromo es una cadena que se lee lo mismo hacia atrás que hacia adelante. Por ejemplo, "aba" y "o" son palíndromos, pero "ab" y "aaba" no lo son.
+
+# Entrada
+
+Un entero $t$, los casos de prueba.
+
+$t$ lineas, en cada una un entero $n$.
+
+# Salida
+
+Para cada caso de prueba, genere una cadena de letras minúsculas con una longitud como máximo 300 que tenga exactamente $n$ subcadenas palindrómicas.
+
+Ha sido probado que bajo las restricciones dadas, tal cadena siempre existe :).
+
+#ejemplo
+
+||input
+6
+1
+11
+12
+13
+21
+25
+||output
+o
+kannawoah
+abacaba
+feelssadman
+howtomakegoodsamples
+anutforajaroftuna
+||end
+
+# Límites
+
+- $1 \leq t \leq 5 \cdot 10^3$
+- $1 \leq n \leq 2 \cdot 10^4$

@@ -1,0 +1,73 @@
+# Descripción
+
+Cansado de buscar problemas para los concursos del selectivo de la OMICH, decidiste eliminar a los alumnos que peor jueguen a las escondidas.
+
+Asustado de quedar fuera del selectivo, tienes que decir en qué coordenada te vas a esconder, esta debe de ser la más lejana posible de donde se empieza a contar.
+
+Se te indicará la coordenada $(fila, columna)$ donde se empezará a contar.
+
+Tú debes esconderte sólo en casillas que estén libres (caracteres '.') y que sean alcanzables, además por acuerdo de todos, sólo puedes moverte a las 4 casillas adyacentes (norte, sur, este y oeste) siempre y cuando no esté bloqueada ('#').
+
+# Entrada
+
+Dos enteros $n$ y $m$ las dimensiones del tablero
+
+$n$ líneas de $m$ caracteres que denotan la matriz
+
+Dos enteros $fila$ y $columna$ apartir de qué coordenada se va a empezar a contar. (se puede ver en el tablero como una 'S')
+
+# Salida
+
+Cualquier coordenada que esté lo más alejada posible de la posición de conteo, nota que está debe de ser alcanzable o tu respuesta será inválida.
+
+# Ejemplo
+
+||input
+10 10
+#....#...#
+.........#
+##......S#
+.#.##..#..
+..###.#...
+..#....#..
+..#.......
+..........
+...##.....
+#.#..#....
+3 9
+||output
+4 1
+||description
+No hay otra casilla más alejada
+||input
+5 5
+.....
+.....
+..S..
+.....
+.....
+3 3
+||output
+1 1
+||description
+Otras respuestas correctas son (1, 5), (5, 1), (5, 5)
+||input
+5 5
+...#.
+.....
+S##.#
+.##.#
+...#.
+3 1
+||output
+4 4
+||description
+Otra respuesta puede ser (1, 5) a distancia 6, nótese que (5, 5) sería la mejor respuesta porque no nos podrían ver, pero no hay forma alguna de llegar ahí
+||end
+
+# Límites
+- $1\leq n, m \leq 1000$
+- $m_{i, j}$ puede ser cualquier caracter .#S
+- $1 \leq fila \leq n$
+- $1 \leq columna \leq m$
+

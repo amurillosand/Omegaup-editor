@@ -11,11 +11,12 @@ import useStateCallback from "./libs/other/useStateCallback";
 
 import { v4 as uuid } from "uuid";
 import { fileToString } from "./libs/other/toString"
-import writingTemplate from "./pages/writing/template.txt"
-import solutionTemplate from "./pages/solution/solution.cpp"
-import generatorTemplate from "./pages/generator/generator.cpp"
-import generateCasesTemplate from "./pages/generator/generateCases.py"
-import validatorTemplate from "./pages/validator/validator.cpp"
+import {
+  generateCasesFile,
+  arraySumWriting, arraySumSolution, arraySumGenerator, arraySumValidator,
+  hideAndSeekWriting, hideAndSeekSolution, hideAndSeekGenerator, hideAndSeekValidator,
+  palindromicityWriting, palindromicitySolution, palindromicityGenerator, palindromicityValidator,
+} from "./ProblemsData";
 
 export const AppContext = React.createContext(null);
 
@@ -24,22 +25,18 @@ export function useAppContext() {
 }
 
 export const App = () => {
-  const [generator, setGenerator] = useState({
+  const codeTemplate = {
     code: "",
     language: "cpp",
-  });
+    text: ""
+  };
+
+  const [generator, setGenerator] = useState(codeTemplate);
 
   const [needsValidator, setNeedsValidator] = useState(false);
-  const [validator, setValidator] = useState({
-    code: "",
-    language: "cpp",
-  });
+  const [validator, setValidator] = useState(codeTemplate);
 
-  const [solution, setSolution] = useState({
-    code: "",
-    language: "",
-    text: ""
-  });
+  const [solution, setSolution] = useState(codeTemplate);
 
   const [solutionError, setSolutionError] = useState(null);
   const [generatorError, setGeneratorError] = useState(null);
@@ -50,7 +47,8 @@ export const App = () => {
 
   const [generateCases, setGenerateCases] = useState({});
 
-  useEffect(() => {
+  function loadProblem(solutionTemplate, writingTemplate, generatorTemplate, needsValidator = false, validatorTemplate = null) {
+    // Problem solution
     fileToString(solutionTemplate).then((data) => {
       setSolution((prevState) => ({
         ...prevState,
@@ -59,17 +57,12 @@ export const App = () => {
       }));
     });
 
-    fileToString(generateCasesTemplate).then((data) => {
-      setGenerateCases({
-        code: data,
-        language: "py"
-      });
-    });
-
+    // Problem statement
     fileToString(writingTemplate).then((data) => {
       setWriting(data);
     });
 
+    // Test case generator
     fileToString(generatorTemplate).then((data) => {
       setGenerator({
         code: data,
@@ -77,10 +70,37 @@ export const App = () => {
       });
     });
 
-    fileToString(validatorTemplate).then((data) => {
-      setValidator({
+    // Validator if any
+    setNeedsValidator(needsValidator);
+    if (validatorTemplate) {
+      fileToString(validatorTemplate).then((data) => {
+        setValidator({
+          code: data,
+          language: "cpp",
+        });
+      });
+    }
+  }
+
+  function loadArraySumProblem() {
+    loadProblem(arraySumSolution, arraySumWriting, arraySumGenerator, false, arraySumValidator);
+  }
+
+  function loadHideAndSeekProblem() {
+    loadProblem(hideAndSeekSolution, hideAndSeekWriting, hideAndSeekGenerator, true, hideAndSeekValidator);
+  }
+
+  function loadPalindromicityProblem() {
+    loadProblem(palindromicitySolution, palindromicityWriting, palindromicityGenerator, true, palindromicityValidator);
+  }
+
+  useEffect(() => {
+    loadArraySumProblem();
+
+    fileToString(generateCasesFile).then((data) => {
+      setGenerateCases({
         code: data,
-        language: "cpp",
+        language: "py"
       });
     });
 
@@ -306,7 +326,10 @@ export const App = () => {
           calculatePoints, maxPointsAvailable,
           sortGroups,
           solutionError, setSolutionError,
-          generatorError, setGeneratorError
+          generatorError, setGeneratorError,
+          loadArraySumProblem,
+          loadHideAndSeekProblem,
+          loadPalindromicityProblem
         }}>
         <>
           <Navbar />

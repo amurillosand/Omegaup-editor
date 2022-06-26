@@ -4,7 +4,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { BiCodeBlock as CodeIcon } from "react-icons/bi";
 import { BsPencil as EditIcon } from "react-icons/bs";
 import { FiCheckSquare } from "react-icons/fi";
-import { IoMdCheckmarkCircleOutline as CheckIcon } from "react-icons/io";
+import { GrTest as CheckIcon } from "react-icons/gr";
 
 import SolutionWindow from "./solution/SolutionWindow";
 import WritingWindow from "./writing/WritingWindow";

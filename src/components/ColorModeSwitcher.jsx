@@ -14,7 +14,7 @@ export const ColorModeSwitcher = (props) => {
   const SwitchIcon = useColorModeValue(FaMoon, FaSun);
 
   return (
-    <Tooltip label={"Modo Oscuro/Luz"}>
+    <Tooltip label={"Modo oscuro/luz"}>
       <IconButton
         size="md"
         fontSize="lg"

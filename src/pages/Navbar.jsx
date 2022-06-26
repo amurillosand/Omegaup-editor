@@ -6,6 +6,7 @@ import { ColorModeSwitcher } from "../components/ColorModeSwitcher";
 import dark from "../assets/images/logoDark.png";
 import light from "../assets/images/logoLight.png";
 import OtherTools from "./OtherTool";
+import MoreExamples from "./MoreExamples";
 
 const Navbar = () => {
   const logo = useColorModeValue(light, dark);
@@ -21,6 +22,10 @@ const Navbar = () => {
           </Box>
 
           <Spacer />
+
+          <Box>
+            <MoreExamples />
+          </Box>
 
           <Box>
             <OtherTools />
