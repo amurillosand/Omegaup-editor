@@ -2,6 +2,27 @@
 using namespace std;
 
 #define fore(i, l, r) for (auto i = (l); i < (r); i++)
+#define sz(x) int(x.size())
+#define all(x) begin(x), end(x)
+#define f first
+#define s second
+#define pb push_back
+
+template <class A, class B>
+ostream& operator<<(ostream& os, const pair<A, B>& p) {
+  return os << p.first << " " << p.second;
+}
+
+template <class A, class B, class C>
+basic_ostream<A, B>& operator<<(basic_ostream<A, B>& os, const C& c) {
+  for (const auto& x : c) {
+    if (&x != &*begin(c)) {
+      os << " ";
+    }
+    os << x;
+  }
+  return os;
+}
 
 struct Random {
   mt19937 rng;
@@ -161,6 +182,16 @@ struct String : string {
   }
 };
 
+void print() {
+  cout << '\n';
+}
+
+template <class H, class... T>
+void print(const H& h, const T&... t) {
+  cout << h << " ";
+  print(t...);
+}
+
 int main() {
   cin.tie(0)->sync_with_stdio(0), cout.tie(0);
 
@@ -179,12 +210,10 @@ int main() {
     n = 2;
   }
 
-  cout << n << '\n';
+  print(n);
 
   auto a = random.getArray<int>(n, 1, 1000);
-  for (auto x : a)
-    cout << x << " ";
-  cout << '\n';
-
+  print(a);
+  
   return 0;
 }
