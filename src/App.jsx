@@ -236,7 +236,7 @@ export const App = () => {
   }
 
   function sortGroups() {
-    console.log("Sort");
+    // console.log("Sort");
 
     const numbersFirst = (a, b) => {
       let numA = Number(a);
@@ -306,7 +306,15 @@ export const App = () => {
     });
   }
 
-  console.log("groups:", groups);
+  function resetVariables() {
+    setWriting("");
+    setSolution(codeTemplate);
+    setGenerator(codeTemplate);
+    setNeedsValidator(false);
+    setValidator(codeTemplate);
+  }
+
+  // console.log("groups:", groups);
 
   return (
     <ChakraProvider theme={theme}>
@@ -329,7 +337,8 @@ export const App = () => {
           generatorError, setGeneratorError,
           loadArraySumProblem,
           loadHideAndSeekProblem,
-          loadPalindromicityProblem
+          loadPalindromicityProblem,
+          resetVariables
         }}>
         <>
           <Navbar />

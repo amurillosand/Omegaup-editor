@@ -80,7 +80,8 @@ const UploadProblem = (props) => {
     createCase, createGroup,
     addGroup, addCase,
     editCase, editGroup,
-    groups
+    groups,
+    resetVariables,
   } = useAppContext();
 
   const [isUploading, setIsUploading] = useState(false);
@@ -100,6 +101,9 @@ const UploadProblem = (props) => {
 
   async function handleUploadFile(e) {
     e.preventDefault();
+
+    // Reset everything
+    resetVariables();
 
     await JSZip.loadAsync(acceptedFiles[0]).then((zip) => {
       let caseNameToData = new Map();
