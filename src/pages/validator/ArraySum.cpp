@@ -4,24 +4,23 @@ using namespace std;
 #define fore(i, l, r) for (int i = (l); i < (r); i++)
 
 void readTestCase() {
+  // Entrada original que se le fue dada al concursante
   ifstream cin("data.in");
-  
-  // Leer la entrada de cada caso
 
   cin.close();
 }
 
 void readCorrect() {
+  // Archivo que puede contener más información util para evaluar (por ejemplo preprocesamiento de todas las respuestas para este caso)
+  // Esta NO es la respuesta del concursante
   ifstream cin("data.out");
-
-  // Leer la salida esperada (No es necesario)
 
   cin.close();
 }
 
 double score() {
-  // Leer la respuesta del concursante
-  // Comprobar que la respuesta tenga la forma esperada
+  // Aqui se lee la respuesta del concursante con entrada normal
+  // Se tiene que comprobar que la respuesta tenga la forma esperada
   // Regresar un valor entre 0 y 1 el porcentaje obtenido
   return 0.0;
 }
@@ -33,6 +32,6 @@ int main() {
   readCorrect();
 
   cout << fixed << setprecision(2) << score() << '\n';
-  
+
   return 0;
 }

@@ -3,9 +3,7 @@ import React from "react"
 import { GrGraphQl as GraphIcon } from "react-icons/gr";
 import { FaDrawPolygon as GeometryIcon } from "react-icons/fa";
 import { BsGrid1X2 as GridIcon } from "react-icons/bs";
-import { FaHamburger } from "react-icons/fa"
-
-import { Link } from "react-router-dom";
+import { FaTools as Tools } from "react-icons/fa"
 
 import {
   Menu,
@@ -23,7 +21,7 @@ export default function OtherTools() {
         <Tooltip label={"Más herramientas"}>
           <MenuButton
             as={IconButton}
-            icon={<FaHamburger />}
+            icon={<Tools />}
             variant="ghost" />
         </Tooltip>
 

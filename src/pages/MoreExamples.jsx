@@ -1,6 +1,6 @@
 import React from "react"
 
-import { BiHelpCircle as Help } from "react-icons/bi";
+import { IoMdHelpCircle as Help } from "react-icons/io";
 
 import {
   Menu,
@@ -25,6 +25,7 @@ export default function MoreExamples() {
       <Menu>
         <Tooltip label={"Más ejemplos"}>
           <MenuButton
+            size="lg"
             as={IconButton}
             icon={<Help />}
             variant="ghost" />

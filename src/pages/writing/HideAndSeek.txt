@@ -1,5 +1,7 @@
 # Descripción
 
+https://omegaup.com/arena/problem/Escondidas-omich2022/
+
 Cansado de buscar problemas para los concursos del selectivo de la OMICH, decidiste eliminar a los alumnos que peor jueguen a las escondidas.
 
 Asustado de quedar fuera del selectivo, tienes que decir en qué coordenada te vas a esconder, esta debe de ser la más lejana posible de donde se empieza a contar.

@@ -1,5 +1,7 @@
 # Descripción
 
+https://omegaup.com/arena/problem/Palindromicity
+
 Se le da un entero $n$. Genere cualquier cadena de letras minúsculas con una longitud como máximo de $300$ que tenga exactamente $n$ subcadenas palindrómicas.
 
 Recordemos que $p$ es una subcadena de $q$ si $p$ se puede obtener eliminando varios caracteres (posiblemente ninguno) del principio y del final de $q$. 

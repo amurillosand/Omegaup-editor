@@ -86,8 +86,12 @@ const GeneratorWindow = () => {
         )}
 
         {showExplanation && (
-          <Box ml={5} w={showCode ? "50%" : "100%"}>
+          <Box
+            ml={5}
+            w={showCode ? "50%" : "100%"}
+          >
             <Text
+              textAlign={"justify"}
               dangerouslySetInnerHTML={{ __html: generatorInformation }}
               className={style + " markdown"}>
             </Text>

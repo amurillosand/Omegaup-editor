@@ -25,6 +25,7 @@ function getTable(lines) {
     { first: "||output", second: "||description" },
     { first: "||description", second: "||input" },
   ];
+
   let iterator = 0;
   let row = [];
   let table = [];
@@ -35,7 +36,6 @@ function getTable(lines) {
     const firstOccurrence = occurrences[iterator % 3].first;
     const secondOccurrence = occurrences[iterator % 3].second;
     let { result, range } = splitBetweenTwo(lines, 0, secondOccurrence, "||end");
-
 
     if (secondOccurrence === "||description") {
       // Check if there is any ||input in between
@@ -70,7 +70,13 @@ function getTable(lines) {
 }
 
 export const toGFM = (input) => {
-  let lines = input.split('\n');
+  let lines = input.split('\n').map((line) => {
+    line = line.trim();
+    if (line.startsWith("||")) {
+      line = line.replaceAll(" ", "");
+    }
+    return line;
+  });
 
   let final = [];
 
@@ -108,9 +114,9 @@ export const parse = (input) => {
     html: true,
     linkify: true,
     typographer: true,
-  }).use(markdownMath, { 
-    engine: katex, 
-    delimiters: "dollars" 
+  }).use(markdownMath, {
+    engine: katex,
+    delimiters: "dollars"
   });
 
   const GFMString = toGFM(input);

@@ -3,8 +3,9 @@ import { Container, HStack, Kbd } from "@chakra-ui/react";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { BiCodeBlock as CodeIcon } from "react-icons/bi";
 import { BsPencil as EditIcon } from "react-icons/bs";
-import { FiCheckSquare } from "react-icons/fi";
-import { GrTest as CheckIcon } from "react-icons/gr";
+import { BiTestTube as GenerateIcon } from "react-icons/bi";
+import { GrTest as TestsIcon } from "react-icons/gr";
+import { FiCheckSquare as CheckIcon } from "react-icons/fi";
 
 import SolutionWindow from "./solution/SolutionWindow";
 import WritingWindow from "./writing/WritingWindow";
@@ -33,10 +34,12 @@ const MainWindow = () => {
 
   return (
     <>
-      <Container maxW={"container.xl"} mt={3} h={"80vh"} padding={"0"}>
+      <Container maxW={"container.xl"} mt={5} h={"80vh"} padding={"0"}>
         <Tabs
+          // isFitted
           variant={"enclosed"}
           size={"sm"}
+          align={"center"}
           index={tabIndex}
           onChange={(e) => setTab(e)}
         >
@@ -63,7 +66,7 @@ const MainWindow = () => {
 
             <Tab>
               <HStack>
-                <CodeIcon />
+                <GenerateIcon />
                 <p>Generador de casos</p>
                 <span>
                   <Kbd>Ctrl</Kbd>+<Kbd>3</Kbd>
@@ -73,7 +76,7 @@ const MainWindow = () => {
 
             <Tab>
               <HStack>
-                <CheckIcon />
+                <TestsIcon />
                 <p>Casos de prueba</p>
                 <span>
                   <Kbd>Ctrl</Kbd>+<Kbd>4</Kbd>
@@ -83,7 +86,7 @@ const MainWindow = () => {
 
             <Tab>
               <HStack>
-                <FiCheckSquare />
+                <CheckIcon />
                 <p>Validador</p>
                 <span>
                   <Kbd>Ctrl</Kbd>+<Kbd>5</Kbd>

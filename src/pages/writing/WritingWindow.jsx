@@ -20,10 +20,6 @@ import "../../libs/markdown/markdownStyles/MarkdownDark.css";
 import "../../libs/markdown/markdownStyles/MarkdownLight.css";
 import "../../libs/markdown/markdownStyles/Markdown.css";
 import "../../libs/markdown/editorStyles/react-mde-all.css";
-// @ts-ignore
-import markdownMath from "markdown-it-texmath";
-// @ts-ignore
-import katex from "katex";
 
 import ReactMde from "react-mde";
 import { useAppContext } from "../../App";
@@ -79,7 +75,9 @@ const WritingWindow = () => {
           )}
 
           <Box ml={5} w={showEditor ? "50%" : "100%"}>
-            <Box
+            <Text
+              textAlign={"justify"}
+              overflow={"auto"}
               ref={divRef}
               className={style + " markdown"}
             />

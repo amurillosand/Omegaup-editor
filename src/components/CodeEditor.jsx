@@ -51,7 +51,7 @@ const CodeEditor = (props) => {
 
   return (
     <div hidden={hidden | false}>
-      < Box
+      <Box
         zIndex={0}
         border={"0.5px solid #C8CCD0"}
         borderRadius={2} >
