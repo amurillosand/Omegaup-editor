@@ -77,6 +77,7 @@ with open("testplan") as testPlan:
             line[0] = "sin_grupo." + line[0]
 
         groupTestCase = line[0].replace(".", " ")
+        print(f"Generating {groupTestCase} ...")
 
         trash = open("trash", 'w')
         trash.write(f"{groupTestCase}")
