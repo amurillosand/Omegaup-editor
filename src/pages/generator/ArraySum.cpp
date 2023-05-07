@@ -49,14 +49,14 @@ struct Random {
     return v;
   }
 
-  // Returns a random value, the default type is of the largest.
-  template <class T, class Z = T>
-  Z get(T low, Z high) {
+  // Returns a random value
+  template <class T>
+  T get(T low, T high) {
     assert(low <= high);
-    if constexpr (is_integral_v<Z>) {
-      return uniform_int_distribution<Z>(low, high)(rng);
-    } else if (is_floating_point_v<Z>) {
-      return uniform_real_distribution<Z>(low, high)(rng);
+    if constexpr (is_integral_v<T>) {
+      return uniform_int_distribution<T>(low, high)(rng);
+    } else if (is_floating_point_v<T>) {
+      return uniform_real_distribution<T>(low, high)(rng);
     }
   }
 
@@ -117,7 +117,8 @@ struct Random {
     string s;
     while (n--) {
       int k = rng() % (pattern.size() / 2);
-      s += get<char>(pattern[2 * k], pattern[2 * k + 1]);
+      char c = get<int>(pattern[2 * k], pattern[2 * k + 1]);
+      s += c;
     }
     return s;
   }
