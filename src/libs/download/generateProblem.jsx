@@ -28,10 +28,10 @@ testplan
  */
 
 const waitingTime = {
-  testPlan: 3000,
-  input: 5000,
-  output: 5000,
-  generateZip: 5000,
+  testPlan: 1000,
+  input: 1000,
+  output: 1000,
+  generateZip: 1000,
   closeToast: 8000,
 };
 
