@@ -120,7 +120,7 @@ const AddCase = (props) => {
   return (
     <form onSubmit={(e) => handleSubmit(e)}>
       <FormControl mt={3}>
-        <FormLabel> Nombre del caso </FormLabel>
+        <FormLabel> Nombre del grupo </FormLabel>
         <Input onChange={(e) => (caseNameRef.current = e.target.value)} />
         <FormHelperText> Sin espacios</FormHelperText>
       </FormControl>
