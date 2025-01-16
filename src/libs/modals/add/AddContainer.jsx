@@ -41,14 +41,14 @@ const AddContainer = (props) => {
           <Tabs size={"sm"}>
             <TabList>
               <Tab> Grupo </Tab>
-              <Tab> Caso </Tab>
+              {/* <Tab> Casos </Tab> */}
               {/* <Tab> Multiples casos </Tab> */}
             </TabList>
 
             <TabPanels>
-              <TabPanel>
+             {/* <TabPanel>
                 <AddGroup onClose={onClose} />
-              </TabPanel>
+              </TabPanel> */}
 
               <TabPanel>
                 <AddCase onClose={onClose} />
